@@ -24,7 +24,7 @@ class MainPage extends Component {
       <BrowserRouter>
         <div className="flex">
           <div className="flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto border-r">
-            <h2 className="text-3xl font-semibold text-center text-blue-800">Logo</h2>
+            <h2 className="text-3xl font-semibold text-center text-blue-800">P2PManager</h2>
 
             <div className="flex flex-col justify-between mt-6">
               <aside>

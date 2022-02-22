@@ -42,6 +42,26 @@ ipcMain.on("delete-account", (event, arg) => {
   event.reply("list-accounts-reply", accounts);
 });
 
+ipcMain.on("update-account", (event, arg) => {
+  var accounts = store.getSync("accounts");
+  if (!accounts) {
+    accounts = [];
+  }
+
+  for (var i = 0; i < accounts.length; i++) {
+    if (accounts[i].id == arg.id) {
+      accounts[i].name = arg.name;
+      accounts[i].user = arg.user;
+      accounts[i].password = arg.password;
+      accounts[i].description = arg.description;
+      break;
+    }
+  }
+
+  store.set("accounts", accounts);
+  event.reply("list-accounts-reply", accounts);
+});
+
 // Create the native browser window.
 function createWindow() {
   const mainWindow = new BrowserWindow({
