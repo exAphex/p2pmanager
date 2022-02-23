@@ -11,7 +11,7 @@ const bondstergrabber = require("./js/grabber/bondstergrabber.js");
 ipcMain.on("query-account", (event, arg) => {
   try {
     var accounts = store.getSync("accounts");
-    if (!accounts) {
+    if (!accounts || !Array.isArray(accounts)) {
       accounts = [];
     }
     for (var i = 0; i < accounts.length; i++) {
@@ -46,7 +46,7 @@ ipcMain.on("query-account", (event, arg) => {
 
 ipcMain.on("add-account", (event, arg) => {
   var accounts = store.getSync("accounts");
-  if (!accounts) {
+  if (!accounts || !Array.isArray(accounts)) {
     accounts = [];
   }
 
@@ -58,7 +58,7 @@ ipcMain.on("add-account", (event, arg) => {
 
 ipcMain.on("list-accounts", (event, arg) => {
   var accounts = store.getSync("accounts");
-  if (!accounts) {
+  if (!accounts || !Array.isArray(accounts)) {
     accounts = [];
   }
   for (var i = 0; i < accounts.length; i++) {
@@ -69,7 +69,7 @@ ipcMain.on("list-accounts", (event, arg) => {
 
 ipcMain.on("delete-account", (event, arg) => {
   var accounts = store.getSync("accounts");
-  if (!accounts) {
+  if (!accounts || !Array.isArray(accounts)) {
     accounts = [];
   }
 
@@ -86,7 +86,7 @@ ipcMain.on("delete-account", (event, arg) => {
 
 ipcMain.on("update-account", (event, arg) => {
   var accounts = store.getSync("accounts");
-  if (!accounts) {
+  if (!accounts || !Array.isArray(accounts)) {
     accounts = [];
   }
 

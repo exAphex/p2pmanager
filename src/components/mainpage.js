@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import Settings from "./pages/settings";
 import { Link } from "react-router-dom";
@@ -21,7 +21,7 @@ class MainPage extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter basename="/">
         <div className="flex">
           <div className="flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto border-r">
             <h2 className="text-3xl font-semibold text-center text-blue-800">P2PManager</h2>
@@ -77,7 +77,7 @@ class MainPage extends Component {
             </Routes>
           </div>
         </div>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
