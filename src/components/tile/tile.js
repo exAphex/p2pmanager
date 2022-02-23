@@ -20,16 +20,10 @@ class Tile extends React.Component {
               <h3 className="text-sm leading-6 font-medium text-gray-400">{this.props.title}</h3>
               <div className="mt-1">
                 <div className="flex flex-wrap space-x-2 items-center pr-3">
-                  <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black">
-                    {this.props.total.toLocaleString("de-DE", {
-                      style: "currency",
-                      currency: "EUR",
-                      minimumFractionDigits: 2,
-                    })}
-                  </p>
+                  <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black">{this.toCurrencyString(this.props.total)}</p>
                   {this.props.showIndicator === "true" ? (
-                    <div className={"relative w-auto pl-1 flex-initial text-xs " + (this.props.totalprofit >= 0 ? "text-green-800 bg-green-200" : "text-red-800 bg-red-200") + " rounded-md p-1 "}>
-                      {this.props.totalprofit >= 0 ? (
+                    <div className={"relative w-auto pl-1 flex-initial text-xs " + (this.props.profit >= 0 ? "text-green-800 bg-green-200" : "text-red-800 bg-red-200") + " rounded-md p-1 "}>
+                      {this.props.profit >= 0 ? (
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                         </svg>

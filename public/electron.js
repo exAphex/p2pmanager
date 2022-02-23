@@ -4,6 +4,45 @@ const path = require("path");
 const url = require("url");
 const { ipcMain } = require("electron");
 const store = require("electron-json-storage");
+const getincomegrabber = require("./js/grabber/getincomegrabber.js");
+const peerberrygrabber = require("./js/grabber/peerberrygrabber.js");
+const bondstergrabber = require("./js/grabber/bondstergrabber.js");
+
+ipcMain.on("query-account", (event, arg) => {
+  try {
+    var accounts = store.getSync("accounts");
+    if (!accounts) {
+      accounts = [];
+    }
+    for (var i = 0; i < accounts.length; i++) {
+      if (accounts[i].id == arg.id) {
+        switch (accounts[i].type) {
+          case "GetIncome":
+            getincomegrabber.grabGetIncome(accounts[i].user, accounts[i].password).then((data) => {
+              updateAccountBalances(accounts[i].id, data);
+              event.reply("query-account-reply", { id: accounts[i].id, data: data });
+            });
+            break;
+          case "PeerBerry":
+            peerberrygrabber.getPeerBerry(accounts[i].user, accounts[i].password).then((data) => {
+              updateAccountBalances(accounts[i].id, data);
+              event.reply("query-account-reply", { id: accounts[i].id, data: data });
+            });
+            break;
+          case "Bondster":
+            bondstergrabber.getBondster(accounts[i].user, accounts[i].password).then((data) => {
+              updateAccountBalances(accounts[i].id, data);
+              event.reply("query-account-reply", { id: accounts[i].id, data: data });
+            });
+            break;
+        }
+        break;
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 ipcMain.on("add-account", (event, arg) => {
   var accounts = store.getSync("accounts");
@@ -21,6 +60,9 @@ ipcMain.on("list-accounts", (event, arg) => {
   var accounts = store.getSync("accounts");
   if (!accounts) {
     accounts = [];
+  }
+  for (var i = 0; i < accounts.length; i++) {
+    accounts[i].balances = store.getSync("balance_" + accounts[i].id);
   }
   event.reply("list-accounts-reply", accounts);
 });
@@ -62,6 +104,17 @@ ipcMain.on("update-account", (event, arg) => {
   event.reply("list-accounts-reply", accounts);
 });
 
+function updateAccountBalances(id, balanceData) {
+  var balances = store.getSync("balance_" + id);
+  if (!balances) {
+    balances = {};
+  }
+  var today = new Date();
+  var dateString = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+  balances[dateString] = balanceData;
+  store.set("balance_" + id, balances);
+}
+
 // Create the native browser window.
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -78,7 +131,7 @@ function createWindow() {
 
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.
-  // In development, set it to localhost to allow live/hot-reloading.
+  // In development, set it to locdalhost to allow live/hot-reloading.
   const appURL = app.isPackaged
     ? url.format({
         pathname: path.join(__dirname, "index.html"),
