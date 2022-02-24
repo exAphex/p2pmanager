@@ -7,6 +7,8 @@ const store = require("electron-json-storage");
 const getincomegrabber = require("./js/grabber/getincomegrabber.js");
 const peerberrygrabber = require("./js/grabber/peerberrygrabber.js");
 const bondstergrabber = require("./js/grabber/bondstergrabber.js");
+const estategurugrabber = require("./js/grabber/estategurugrabber.js");
+const lendsecuredgrabber = require("./js/grabber/lendsecuredgrabber.js");
 
 ipcMain.on("query-account", (event, arg) => {
   try {
@@ -31,6 +33,18 @@ ipcMain.on("query-account", (event, arg) => {
             break;
           case "Bondster":
             bondstergrabber.getBondster(accounts[i].user, accounts[i].password).then((data) => {
+              updateAccountBalances(accounts[i].id, data);
+              event.reply("query-account-reply", { id: accounts[i].id, data: data });
+            });
+            break;
+          case "EstateGuru":
+            estategurugrabber.getEstateGuru(accounts[i].user, accounts[i].password).then((data) => {
+              updateAccountBalances(accounts[i].id, data);
+              event.reply("query-account-reply", { id: accounts[i].id, data: data });
+            });
+            break;
+          case "LendSecured":
+            lendsecuredgrabber.getLendSecured(accounts[i].user, accounts[i].password).then((data) => {
               updateAccountBalances(accounts[i].id, data);
               event.reply("query-account-reply", { id: accounts[i].id, data: data });
             });
