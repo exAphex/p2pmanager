@@ -32,6 +32,7 @@ class Home extends Component {
           accounts[i].uninvested = arg.data.uninvested;
           accounts[i].loss = arg.data.loss;
           accounts[i].profit = arg.data.profit;
+          accounts[i].isLoading = false;
           break;
         }
       }
@@ -59,8 +60,10 @@ class Home extends Component {
   onRefreshAccounts() {
     var accounts = this.state.accounts;
     for (var i = 0; i < accounts.length; i++) {
+      accounts[i].isLoading = true;
       ipcRenderer.send("query-account", accounts[i]);
     }
+    this.setState({ accounts: accounts });
   }
 
   render() {
@@ -90,7 +93,7 @@ class Home extends Component {
                 return l.name > u.name ? 1 : -1;
               })
               .map((item) => (
-                <Tile total={item.total} title={item.name} showIndicator="true" invested={item.invested} uninvested={item.uninvested} loss={item.loss} profit={item.profit}></Tile>
+                <Tile isLoading={item.isLoading} total={item.total} title={item.name} showIndicator="true" invested={item.invested} uninvested={item.uninvested} loss={item.loss} profit={item.profit}></Tile>
               ))}
           </div>
         </div>

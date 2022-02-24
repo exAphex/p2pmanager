@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import LoadingSpin from "react-loading-spin";
 
 class Tile extends React.Component {
   toCurrencyString(amount) {
@@ -16,8 +17,12 @@ class Tile extends React.Component {
       <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow transform transition-all mb-4 w-full sm:w-1/3 sm:my-2">
         <div className="bg-white p-5">
           <div className="">
-            <div className="text-center sm:mt-0 sm:ml-2 sm:text-left">
-              <h3 className="text-sm leading-6 font-medium text-gray-400">{this.props.title}</h3>
+            <div className="mt-1">
+              <div className="flex flex-wrap space-x-3 items-center pr-3">
+                <h3 className="text-sm leading-6 font-medium text-gray-400">{this.props.title}</h3>
+                <div className="relative w-auto pl-1 flex-initial text-xs rounded-md p-1 ">{this.props.isLoading ? <LoadingSpin size="24px" /> : false}</div>
+              </div>
+
               <div className="mt-1">
                 <div className="flex flex-wrap space-x-2 items-center pr-3">
                   <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black">{this.toCurrencyString(this.props.total)}</p>
