@@ -69,6 +69,8 @@ class Settings extends Component {
         return <img width="24" height="24" src={"/img/estateguru.png"} alt="EstateGuru" />;
       case "Esketit":
         return <img width="24" height="24" src={"/img/esketit.ico"} alt="Esketit" />;
+      default:
+        return null;
     }
   }
 

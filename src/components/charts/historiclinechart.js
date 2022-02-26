@@ -18,35 +18,6 @@ const footer = (tooltipItems) => {
   );
 };
 
-const options = {
-  spanGaps: 1000 * 60 * 60 * 24 * 2,
-  interaction: {
-    axis: "xy",
-    mode: "index",
-    intersect: false,
-  },
-  responsive: true,
-  radius: 0,
-
-  scales: {
-    x: {
-      type: "time",
-
-      time: {
-        // Luxon format string
-        unit: "day",
-        stepSize: 1,
-        tooltipFormat: "DD.MM.YYYY",
-      },
-      ticks: {
-        min: 0,
-        max: 4,
-        // For a category axis, the val is the index so the lookup via getLabelForValue is needed
-      },
-    },
-  },
-};
-
 class HistoricLineChart extends Component {
   state = {
     chartData: {},
@@ -110,10 +81,9 @@ class HistoricLineChart extends Component {
         var tmpData = [];
         n.data
           .sort((a, b) => (moment(a.time).isAfter(b.time) ? 1 : moment(a.time).isBefore(b.time) ? -1 : 0))
-          .map((item) => {
+          .forEach((item) => {
             tmpData.push({ x: moment(item.time).toDate(), y: item.total });
           });
-
         i++;
 
         let obj = { label: n.name, data: tmpData, spanGaps: !1, borderWidth: 2, pointRadius: 0, backgroundColor: colors[i], borderColor: colors[i] };
@@ -162,25 +132,14 @@ class HistoricLineChart extends Component {
 
   getMinDate(arr, intervalNameNative) {
     var minDate = moment();
-    arr.map((n) => {
-      n.transactions.map((trans) => {
+    arr.forEach((n) => {
+      n.transactions.forEach((trans) => {
         if (moment(trans.t) < minDate) {
           minDate = moment(trans.t);
         }
       });
     });
-    console.log(minDate);
     return minDate.startOf(intervalNameNative);
-  }
-
-  findInTransactions(arr, time, intervalName, intervalNameNative) {
-    var result = [];
-    arr.map((t) => {
-      if (time.diff(moment(t.t).startOf(intervalNameNative), intervalName) == 0) {
-        result.push(t);
-      }
-    });
-    return result;
   }
 
   render() {

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Tile from "../tile/tile";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
 const { ipcRenderer } = window.require("electron");
@@ -42,7 +41,7 @@ class Home extends Component {
     ipcRenderer.on("query-account-reply", (event, arg) => {
       var accounts = this.state.accounts;
       for (var i = 0; i < accounts.length; i++) {
-        if (accounts[i].id == arg.id) {
+        if (accounts[i].id === arg.id) {
           accounts[i].total = arg.data.total;
           accounts[i].invested = arg.data.invested;
           accounts[i].uninvested = arg.data.uninvested;
@@ -72,7 +71,7 @@ class Home extends Component {
     ipcRenderer.on("query-account-error", (event, arg) => {
       var accounts = this.state.accounts;
       for (var i = 0; i < accounts.length; i++) {
-        if (accounts[i].id == arg.message.id) {
+        if (accounts[i].id === arg.message.id) {
           accounts[i].isLoading = false;
           accounts[i].isError = true;
           accounts[i].errorMessage = arg.error;
@@ -98,8 +97,8 @@ class Home extends Component {
     }
 
     var chartArr = [];
-    for (var item in chartObj) {
-      chartArr.push({ time: item, total: chartObj[item] });
+    for (var chartItem in chartObj) {
+      chartArr.push({ time: chartItem, total: chartObj[chartItem] });
     }
 
     return chartArr;
@@ -136,13 +135,13 @@ class Home extends Component {
           <div>Home</div>
         </div>
         <div className="max-w-full mx-4 py-0 sm:mx-auto sm:px-6 lg:px-8">
-          <div class="flex flex-wrap space-x-2 items-center">
-            <p class="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black"></p>
-            <div class="relative w-auto pl-1 flex-initial p-1 ">
+          <div className="flex flex-wrap space-x-2 items-center">
+            <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black"></p>
+            <div className="relative w-auto pl-1 flex-initial p-1 ">
               <div className="shadow rounded-lg flex mr-2">
                 <button onClick={() => this.onRefreshAccounts()} type="button" className="rounded-lg inline-flex items-center bg-white hover:text-purple-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                   <span className="hidden md:block ml-2">Refresh</span>
                 </button>
@@ -158,7 +157,7 @@ class Home extends Component {
                 return l.name > u.name ? 1 : -1;
               })
               .map((item) => (
-                <Tile errorMessage={item.errorMessage} isError={item.isError} isLoading={item.isLoading} total={item.total} title={item.name} showIndicator="true" invested={item.invested} uninvested={item.uninvested} loss={item.loss} profit={item.profit}></Tile>
+                <Tile key={item.id} errorMessage={item.errorMessage} isError={item.isError} isLoading={item.isLoading} total={item.total} title={item.name} showIndicator="true" invested={item.invested} uninvested={item.uninvested} loss={item.loss} profit={item.profit}></Tile>
               ))}
           </div>
         </div>

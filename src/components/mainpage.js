@@ -8,7 +8,7 @@ class MainPage extends Component {
   state = { selectedNavItem: "DASHBOARD" };
 
   getSelectedBg(item) {
-    if (item == this.state.selectedNavItem) {
+    if (item === this.state.selectedNavItem) {
       return "bg-gray-100";
     } else {
       return "";

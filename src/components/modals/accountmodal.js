@@ -40,7 +40,7 @@ class AccountModal extends Component {
   handleChangeType(evt) {
     var types = this.state.types;
     for (var i = 0; i < types.length; i++) {
-      if (types[i].name == evt.target.value) {
+      if (types[i].name === evt.target.value) {
         this.setState({ type: types[i].type });
         break;
       }
