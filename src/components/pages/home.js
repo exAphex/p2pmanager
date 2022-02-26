@@ -2,14 +2,16 @@ import React, { Component } from "react";
 import Tile from "../tile/tile";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import HistoricLineChart from "../charts/historiclinechart";
 const { ipcRenderer } = window.require("electron");
 
 class Home extends Component {
-  state = { accounts: [], timestamp: new Date() };
+  state = { accounts: [], timestamp: new Date(), chartData: {} };
 
   componentDidMount() {
     ipcRenderer.removeAllListeners("list-accounts-reply");
     ipcRenderer.removeAllListeners("query-account-reply");
+    ipcRenderer.removeAllListeners("query-account-error");
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
       var accounts = arg;
       for (var i = 0; i < accounts.length; i++) {
@@ -19,8 +21,22 @@ class Home extends Component {
         accounts[i].uninvested = bal.uninvested;
         accounts[i].loss = bal.loss;
         accounts[i].profit = bal.profit;
+        accounts[i].isError = false;
       }
       this.setState({ accounts: arg, showNewAccountModal: false, showDeleteAccountModal: false });
+
+      this.setState({
+        chartData: {
+          items: [
+            { name: "total", data: this.collectChartData(accounts, "total") },
+            { name: "invested", data: this.collectChartData(accounts, "invested") },
+            { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
+            { name: "profit", data: this.collectChartData(accounts, "profit") },
+          ],
+          type: "total",
+          timeinterval: "daily",
+        },
+      });
     });
 
     ipcRenderer.on("query-account-reply", (event, arg) => {
@@ -33,6 +49,33 @@ class Home extends Component {
           accounts[i].loss = arg.data.loss;
           accounts[i].profit = arg.data.profit;
           accounts[i].isLoading = false;
+          accounts[i].isError = false;
+          break;
+        }
+      }
+      this.setState({ accounts: accounts });
+
+      this.setState({
+        chartData: {
+          items: [
+            { name: "total", data: this.collectChartData(accounts, "total") },
+            { name: "invested", data: this.collectChartData(accounts, "invested") },
+            { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
+            { name: "profit", data: this.collectChartData(accounts, "profit") },
+          ],
+          type: "total",
+          timeinterval: "daily",
+        },
+      });
+    });
+
+    ipcRenderer.on("query-account-error", (event, arg) => {
+      var accounts = this.state.accounts;
+      for (var i = 0; i < accounts.length; i++) {
+        if (accounts[i].id == arg.message.id) {
+          accounts[i].isLoading = false;
+          accounts[i].isError = true;
+          accounts[i].errorMessage = arg.error;
           break;
         }
       }
@@ -40,6 +83,26 @@ class Home extends Component {
     });
 
     ipcRenderer.send("list-accounts", "test");
+  }
+
+  collectChartData(accounts, prop) {
+    var chartObj = {};
+    for (var i = 0; i < accounts.length; i++) {
+      for (var item in accounts[i].balances) {
+        if (!chartObj[item]) {
+          chartObj[item] = accounts[i].balances[item][prop];
+        } else {
+          chartObj[item] += accounts[i].balances[item][prop];
+        }
+      }
+    }
+
+    var chartArr = [];
+    for (var item in chartObj) {
+      chartArr.push({ time: item, total: chartObj[item] });
+    }
+
+    return chartArr;
   }
 
   getLatestBalance(balances) {
@@ -86,14 +149,16 @@ class Home extends Component {
               </div>
             </div>
           </div>
+          <HistoricLineChart chartData={this.state.chartData}></HistoricLineChart>
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
+
           <div className="sm:flex sm:space-x-4">
             {this.state.accounts
               .sort(function (l, u) {
                 return l.name > u.name ? 1 : -1;
               })
               .map((item) => (
-                <Tile isLoading={item.isLoading} total={item.total} title={item.name} showIndicator="true" invested={item.invested} uninvested={item.uninvested} loss={item.loss} profit={item.profit}></Tile>
+                <Tile errorMessage={item.errorMessage} isError={item.isError} isLoading={item.isLoading} total={item.total} title={item.name} showIndicator="true" invested={item.invested} uninvested={item.uninvested} loss={item.loss} profit={item.profit}></Tile>
               ))}
           </div>
         </div>

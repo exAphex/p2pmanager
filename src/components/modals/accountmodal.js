@@ -13,6 +13,7 @@ class AccountModal extends Component {
     types: [
       { name: "Bondster", type: "Bondster" },
       { name: "EstateGuru", type: "EstateGuru" },
+      { name: "Esketit", type: "Esketit" },
       { name: "GetIncome", type: "GetIncome" },
       { name: "Lendermarket", type: "Lendermarket" },
       { name: "LendSecured", type: "LendSecured" },

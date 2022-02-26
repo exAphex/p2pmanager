@@ -9,6 +9,9 @@ const getPeerBerry = async (username, password) => {
   var retAuthData = await getAuthToken(username, password);
   const response = await fetch(api, { method: "GET", headers: { authorization: "Bearer " + retAuthData.access_token } });
   const json = await response.json();
+  if (response.status > 200) {
+    throw "Unexpected response status " + response.status;
+  }
   var retObj = { total: parseFloat(json.totalBalance), invested: parseFloat(json.investments.total), uninvested: parseFloat(json.availableMoney), profit: parseFloat(json.totalProfit) };
   return retObj;
 };

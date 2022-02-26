@@ -9,6 +9,7 @@ const peerberrygrabber = require("./js/grabber/peerberrygrabber.js");
 const bondstergrabber = require("./js/grabber/bondstergrabber.js");
 const estategurugrabber = require("./js/grabber/estategurugrabber.js");
 const lendsecuredgrabber = require("./js/grabber/lendsecuredgrabber.js");
+const lendermarketgrabber = require("./js/grabber/lendermarketgrabber.js");
 
 ipcMain.on("query-account", (event, arg) => {
   try {
@@ -20,41 +21,90 @@ ipcMain.on("query-account", (event, arg) => {
       if (accounts[i].id == arg.id) {
         switch (accounts[i].type) {
           case "GetIncome":
-            getincomegrabber.grabGetIncome(accounts[i].user, accounts[i].password).then((data) => {
-              updateAccountBalances(accounts[i].id, data);
-              event.reply("query-account-reply", { id: accounts[i].id, data: data });
-            });
+            getincomegrabber
+              .grabGetIncome(accounts[i].user, accounts[i].password)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
             break;
           case "PeerBerry":
-            peerberrygrabber.getPeerBerry(accounts[i].user, accounts[i].password).then((data) => {
-              updateAccountBalances(accounts[i].id, data);
-              event.reply("query-account-reply", { id: accounts[i].id, data: data });
-            });
+            peerberrygrabber
+              .getPeerBerry(accounts[i].user, accounts[i].password)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
             break;
           case "Bondster":
-            bondstergrabber.getBondster(accounts[i].user, accounts[i].password).then((data) => {
-              updateAccountBalances(accounts[i].id, data);
-              event.reply("query-account-reply", { id: accounts[i].id, data: data });
-            });
+            bondstergrabber
+              .getBondster(accounts[i].user, accounts[i].password)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
             break;
           case "EstateGuru":
-            estategurugrabber.getEstateGuru(accounts[i].user, accounts[i].password).then((data) => {
-              updateAccountBalances(accounts[i].id, data);
-              event.reply("query-account-reply", { id: accounts[i].id, data: data });
-            });
+            estategurugrabber
+              .getEstateGuru(accounts[i].user, accounts[i].password)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
             break;
           case "LendSecured":
-            lendsecuredgrabber.getLendSecured(accounts[i].user, accounts[i].password).then((data) => {
-              updateAccountBalances(accounts[i].id, data);
-              event.reply("query-account-reply", { id: accounts[i].id, data: data });
-            });
+            lendsecuredgrabber
+              .getLendSecured(accounts[i].user, accounts[i].password)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
             break;
+          case "Lendermarket":
+            lendermarketgrabber
+              .grabLendermarket(accounts[i].user, accounts[i].password)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
+            break;
+          default:
+            var retObj = { message: arg, error: "Unknown account type" };
+            event.reply("query-account-error", retObj);
         }
         break;
       }
     }
   } catch (e) {
-    console.log(e);
+    event.reply("on-error", { messsage: accounts, error: e });
   }
 });
 
