@@ -11,6 +11,7 @@ P2PManager provides an overview of your p2p investments at a central place.
 - PeerBerry
 - LendSecured
 - Lendermarket
+- Esketit
 
 ## Screenshots
 

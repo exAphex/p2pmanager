@@ -10,6 +10,7 @@ const bondstergrabber = require("./js/grabber/bondstergrabber.js");
 const estategurugrabber = require("./js/grabber/estategurugrabber.js");
 const lendsecuredgrabber = require("./js/grabber/lendsecuredgrabber.js");
 const lendermarketgrabber = require("./js/grabber/lendermarketgrabber.js");
+const esketitgrabber = require("./js/grabber/esketitgrabber.js");
 
 ipcMain.on("query-account", (event, arg) => {
   try {
@@ -87,6 +88,18 @@ ipcMain.on("query-account", (event, arg) => {
           case "Lendermarket":
             lendermarketgrabber
               .grabLendermarket(accounts[i].user, accounts[i].password)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
+            break;
+          case "Esketit":
+            esketitgrabber
+              .grabEsketit(accounts[i].user, accounts[i].password)
               .then((data) => {
                 updateAccountBalances(accounts[i].id, data);
                 event.reply("query-account-reply", { id: accounts[i].id, data: data });

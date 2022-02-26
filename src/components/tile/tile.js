@@ -12,6 +12,23 @@ class Tile extends React.Component {
       minimumFractionDigits: 2,
     });
   }
+
+  formatError(e) {
+    if (!e) {
+      return "";
+    }
+
+    if (e instanceof String) {
+      return e;
+    }
+
+    if (e.message) {
+      return e.message;
+    }
+
+    return "Unkown error!";
+  }
+
   render() {
     return (
       <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow transform transition-all mb-4 w-full sm:w-1/3 sm:my-2">
@@ -25,7 +42,7 @@ class Tile extends React.Component {
                   {this.props.isError ? (
                     <div className="text-red-800">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <title>{this.props.errorMessage}</title>
+                        <title>{this.formatError(this.props.errorMessage)}</title>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
