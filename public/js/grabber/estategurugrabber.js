@@ -29,7 +29,7 @@ const parseTotal = (data) => {
   parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', "</span>");
   parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', "</span>");
   parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', "</span>");
-  var loss = parseFloat(parseObj.value.substr(parseObj.value.indexOf("€") + 1).replaceAll(",", ""));
+  var loss = parseFloat(parseObj.value.substr(parseObj.value.indexOf("€") + 1).replaceAll(",", "")) * -1;
   parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', "</span>");
   parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', "</span>");
   parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', "</span>");
