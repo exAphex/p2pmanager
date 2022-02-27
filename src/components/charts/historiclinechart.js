@@ -3,21 +3,6 @@ import moment from "moment";
 import "chartjs-adapter-moment";
 import { Line } from "react-chartjs-2";
 
-const footer = (tooltipItems) => {
-  let sum = 0;
-  tooltipItems.forEach(function (tooltipItem) {
-    sum += tooltipItem.parsed.y;
-  });
-  return (
-    "Sum: " +
-    sum.toLocaleString("de-DE", {
-      style: "currency",
-      currency: "EUR",
-      minimumFractionDigits: 2,
-    })
-  );
-};
-
 class HistoricLineChart extends Component {
   state = {
     chartData: {},
@@ -34,7 +19,21 @@ class HistoricLineChart extends Component {
       plugins: {
         tooltip: {
           callbacks: {
-            footer: footer,
+            label: function (context) {
+              let label = context.dataset.label || "";
+
+              if (label) {
+                label += ": ";
+              }
+              if (context.parsed.y !== null) {
+                label += context.parsed.y.toLocaleString("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                  minimumFractionDigits: 2,
+                });
+              }
+              return label;
+            },
           },
         },
       },
@@ -54,6 +53,13 @@ class HistoricLineChart extends Component {
             min: 0,
             max: 4,
             // For a category axis, the val is the index so the lookup via getLabelForValue is needed
+          },
+        },
+        y: {
+          ticks: {
+            callback: function (value, index, values) {
+              return value + " €";
+            },
           },
         },
       },

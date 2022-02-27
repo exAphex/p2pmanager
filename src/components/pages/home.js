@@ -134,7 +134,8 @@ class Home extends Component {
         <div className="flex items-center justify-center h-14 border-b font-bold text-4xl">
           <div>Home</div>
         </div>
-        <div className="max-w-full mx-4 py-0 sm:mx-auto sm:px-6 lg:px-8">
+
+        <div className="m dax-w-full mx-4 py-0 sm:mx-auto sm:px-6 lg:px-8">
           <div className="flex flex-wrap space-x-2 items-center">
             <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black"></p>
             <div className="relative w-auto pl-1 flex-initial p-1 ">
@@ -148,10 +149,15 @@ class Home extends Component {
               </div>
             </div>
           </div>
-          <HistoricLineChart chartData={this.state.chartData}></HistoricLineChart>
+          <div className="grid grid-cols-6">
+            <div className="col-start-2 col-span-4">
+              <HistoricLineChart chartData={this.state.chartData}></HistoricLineChart>
+            </div>
+          </div>
+
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
 
-          <div className="sm:flex sm:space-x-4">
+          <div>
             {this.state.accounts
               .sort(function (l, u) {
                 return l.name > u.name ? 1 : -1;
