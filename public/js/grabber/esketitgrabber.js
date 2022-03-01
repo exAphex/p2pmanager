@@ -13,7 +13,7 @@ const grabEsketit = async (username, password) => {
   var data = { currencyCode: "EUR" };
   const response = await fetchCo(api, { method: "POST", headers: { cookie: cookie, "Content-Type": "application/json" }, body: JSON.stringify(data) });
   const json = await response.json();
-  var retObj = { total: json.accountValue, invested: json.totalInvestments, uninvested: json.cashBalance, profit: json.totalIncome, loss: json.secondaryMarketTotal };
+  var retObj = { total: json.accountValue, invested: json.principalInvested, uninvested: json.cashBalance, profit: json.totalIncome, loss: json.secondaryMarketTotal };
   return retObj;
 };
 
