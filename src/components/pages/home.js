@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import Tile from "../tile/tile";
 import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
+import OverviewTile from "../tile/overviewtile";
 const { ipcRenderer } = window.require("electron");
 
 class Home extends Component {
-  state = { accounts: [], timestamp: new Date(), chartData: {} };
+  state = { accounts: [], timestamp: new Date(), chartData: {}, total: 0 };
 
   componentDidMount() {
     ipcRenderer.removeAllListeners("list-accounts-reply");
@@ -13,6 +14,7 @@ class Home extends Component {
     ipcRenderer.removeAllListeners("query-account-error");
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
       var accounts = arg;
+      var total = 0;
       for (var i = 0; i < accounts.length; i++) {
         var bal = this.getLatestBalance(accounts[i].balances);
         accounts[i].total = bal.total;
@@ -21,10 +23,15 @@ class Home extends Component {
         accounts[i].loss = bal.loss;
         accounts[i].profit = bal.profit;
         accounts[i].isError = false;
+
+        total += bal.total;
       }
-      this.setState({ accounts: arg, showNewAccountModal: false, showDeleteAccountModal: false });
 
       this.setState({
+        accounts: arg,
+        showNewAccountModal: false,
+        showDeleteAccountModal: false,
+        total: total,
         chartData: {
           items: [
             { name: "total", data: this.collectChartData(accounts, "total") },
@@ -52,9 +59,9 @@ class Home extends Component {
           break;
         }
       }
-      this.setState({ accounts: accounts });
 
       this.setState({
+        accounts: accounts,
         chartData: {
           items: [
             { name: "total", data: this.collectChartData(accounts, "total") },
@@ -89,9 +96,9 @@ class Home extends Component {
     for (var i = 0; i < accounts.length; i++) {
       for (var item in accounts[i].balances) {
         if (!chartObj[item]) {
-          chartObj[item] = accounts[i].balances[item][prop];
+          chartObj[item] = accounts[i].balances[item] ? accounts[i].balances[item][prop] : 0;
         } else {
-          chartObj[item] += accounts[i].balances[item][prop];
+          chartObj[item] += accounts[i].balances[item] ? accounts[i].balances[item][prop] : 0;
         }
       }
     }
@@ -156,7 +163,7 @@ class Home extends Component {
           </div>
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-
+          <OverviewTile accounts={this.state.accounts}></OverviewTile>
           <div>
             {this.state.accounts
               .sort(function (l, u) {
