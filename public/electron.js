@@ -181,6 +181,10 @@ ipcMain.on("update-account", (event, arg) => {
   event.reply("list-accounts-reply", accounts);
 });
 
+ipcMain.on("get-version", (event, arg) => {
+  event.reply("query-version", app.getVersion());
+});
+
 function updateAccountBalances(id, balanceData) {
   var balances = store.getSync("balance_" + id);
   if (!balances) {

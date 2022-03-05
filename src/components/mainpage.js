@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
+import Info from "./pages/info";
 import Settings from "./pages/settings";
 import { Link } from "react-router-dom";
 
@@ -66,14 +67,30 @@ class MainPage extends Component {
                       <span className="mx-4 font-medium">Settings</span>
                     </Link>
                   </li>
+                  <li>
+                    <Link
+                      className={"flex items-center px-4 py-2 mt-5 text-gray-600 " + this.getSelectedBg("INFO") + " rounded-md hover:bg-gray-200"}
+                      onClick={() => {
+                        this.setSelected("INFO");
+                      }}
+                      to="/info"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+
+                      <span className="mx-4 font-medium">Info</span>
+                    </Link>
+                  </li>
                 </ul>
               </aside>
             </div>
           </div>
-          <div className="w-full h-full overflow-y-auto">
+          <div className="w-full max-h-full overflow-y-auto">
             <Routes>
               <Route path="/" exact element={<Home></Home>} />
               <Route path="/settings" exact element={<Settings />} />
+              <Route path="/info" exact element={<Info />} />
             </Routes>
           </div>
         </div>
