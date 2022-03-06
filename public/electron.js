@@ -4,6 +4,7 @@ const path = require("path");
 const url = require("url");
 const { ipcMain } = require("electron");
 const store = require("electron-json-storage");
+const { autoUpdater } = require("electron-updater");
 const getincomegrabber = require("./js/grabber/getincomegrabber.js");
 const peerberrygrabber = require("./js/grabber/peerberrygrabber.js");
 const bondstergrabber = require("./js/grabber/bondstergrabber.js");
@@ -185,6 +186,17 @@ ipcMain.on("get-version", (event, arg) => {
   event.reply("query-version", app.getVersion());
 });
 
+ipcMain.on("update-app", (event, arg) => {
+  var updateConfig = store.getSync("update_config");
+  if (!updateConfig || !updateConfig.lastCheck) {
+    updateConfig = { lastCheck: 0 };
+  }
+  var hour = 60 * 60 * 1000;
+  if (new Date() - updateConfig.lastCheck > hour) {
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+});
+
 function updateAccountBalances(id, balanceData) {
   var balances = store.getSync("balance_" + id);
   if (!balances) {
@@ -282,5 +294,9 @@ app.on("web-contents-created", (event, contents) => {
   });
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+autoUpdater.on("update-available", () => {
+  mainWindow.webContents.send("update_available");
+});
+autoUpdater.on("update-downloaded", () => {
+  mainWindow.webContents.send("update_downloaded");
+});

@@ -89,6 +89,7 @@ class Home extends Component {
     });
 
     ipcRenderer.send("list-accounts", "test");
+    ipcRenderer.send("update-app", "");
   }
 
   collectChartData(accounts, prop) {
