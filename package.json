@@ -1,6 +1,6 @@
 {
   "name": "p2pmanagerdev",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Aydin Tekin <exaphex@github.com>",
   "description": "P2P Manager app",
   "email": "exaphex@github.com",
@@ -22,6 +22,7 @@
     "fetch-cookie": "^2.0.0",
     "moment": "^2.29.1",
     "node-fetch": "2.0",
+    "node-notifier": "^10.0.1",
     "react": "^17.0.2",
     "react-chartjs-2": "3.0.3",
     "react-dom": "^17.0.2",

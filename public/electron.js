@@ -4,7 +4,8 @@ const path = require("path");
 const url = require("url");
 const { ipcMain } = require("electron");
 const store = require("electron-json-storage");
-const { autoUpdater } = require("electron-updater");
+const fetch = require("node-fetch");
+const notifier = require("node-notifier");
 const getincomegrabber = require("./js/grabber/getincomegrabber.js");
 const peerberrygrabber = require("./js/grabber/peerberrygrabber.js");
 const bondstergrabber = require("./js/grabber/bondstergrabber.js");
@@ -192,9 +193,39 @@ ipcMain.on("update-app", (event, arg) => {
     updateConfig = { lastCheck: 0 };
   }
   var hour = 60 * 60 * 1000;
-  if (new Date() - updateConfig.lastCheck > hour) {
-    autoUpdater.checkForUpdatesAndNotify();
+  if (new Date() - new Date(updateConfig.lastCheck) > hour) {
+    updateConfig.lastCheck = new Date();
+    store.set("update_config", updateConfig);
+    checkForUpdate(event);
   }
+});
+
+async function checkForUpdate(event) {
+  const api = "https://api.github.com/repos/exAphex/p2pmanager/releases";
+  const response = await fetch(api, { method: "GET" });
+  const json = await response.json();
+  if (json && json.length > 0) {
+    json.sort(function (l, u) {
+      return new Date(l.published_at) < new Date(u.published_at) ? 1 : -1;
+    });
+    if (json[0].name != app.getVersion()) {
+      notifier.notify(
+        {
+          title: "New Version available",
+          message: "A new release was found: " + json[0].name + ". Click to download update!",
+          icon: path.join(__dirname, "logo192.png"), // Absolute path (doesn't work on balloons)
+          wait: true,
+        },
+        function (err, response, metadata) {}
+      );
+      event.reply("update-app", { version: json[0].name });
+    }
+  }
+}
+
+notifier.on("click", function (notifierObject, options, event) {
+  const url = "https://github.com/exAphex/p2pmanager/releases/";
+  require("electron").shell.openExternal(url);
 });
 
 function updateAccountBalances(id, balanceData) {
@@ -292,11 +323,4 @@ app.on("web-contents-created", (event, contents) => {
       event.preventDefault();
     }
   });
-});
-
-autoUpdater.on("update-available", () => {
-  mainWindow.webContents.send("update_available");
-});
-autoUpdater.on("update-downloaded", () => {
-  mainWindow.webContents.send("update_downloaded");
 });
