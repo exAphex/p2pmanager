@@ -220,10 +220,6 @@ async function checkForUpdate(event) {
   }
 }
 
-/*notifier.on("click", function (notifierObject, options, event) {
-  
-});*/
-
 function updateAccountBalances(id, balanceData) {
   var balances = store.getSync("balance_" + id);
   if (!balances) {
