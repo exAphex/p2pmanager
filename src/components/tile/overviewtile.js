@@ -73,11 +73,11 @@ class OverviewTile extends React.Component {
         <div className="text-right font-semibold">Loss</div>
         <div className="text-right font-semibold">Profit</div>
 
-        <div className="col-start-1 font-semibold text-right">{this.toCurrencyString(overViewData.total)}</div>
-        <div className="text-right font-semibold">{this.toCurrencyString(overViewData.invested)}</div>
-        <div className="text-right font-semibold">{this.toCurrencyString(overViewData.uninvested)}</div>
-        <div className="text-right font-semibold">{this.toCurrencyString(overViewData.loss)}</div>
-        <div className="text-right font-semibold">{this.toCurrencyString(overViewData.profit)}</div>
+        <div className="col-start-1 text-right">{this.toCurrencyString(overViewData.total)}</div>
+        <div className="text-right ">{this.toCurrencyString(overViewData.invested)}</div>
+        <div className="text-right ">{this.toCurrencyString(overViewData.uninvested)}</div>
+        <div className="text-right ">{this.toCurrencyString(overViewData.loss)}</div>
+        <div className="text-right ">{this.toCurrencyString(overViewData.profit)}</div>
 
         <div className={"col-start-1 text-right " + (absObj.total >= 0 ? "text-green-500" : "text-red-500")}>{(absObj.total >= 0 ? "+ " : "") + this.toCurrencyString(absObj.total)}</div>
         <div className={"text-right " + (absObj.invested >= 0 ? "text-green-500" : "text-red-500")}>{(absObj.invested >= 0 ? "+ " : "") + this.toCurrencyString(absObj.invested)}</div>

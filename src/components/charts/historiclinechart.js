@@ -16,6 +16,9 @@ class HistoricLineChart extends Component {
         mode: "index",
         intersect: false,
       },
+      animation: {
+        duration: 0,
+      },
       plugins: {
         tooltip: {
           callbacks: {
