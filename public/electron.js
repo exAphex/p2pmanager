@@ -1,11 +1,10 @@
 // Module to control the application lifecycle and the native browser window.
-const { app, BrowserWindow, protocol } = require("electron");
+const { app, BrowserWindow, protocol, Notification } = require("electron");
 const path = require("path");
 const url = require("url");
 const { ipcMain } = require("electron");
 const store = require("electron-json-storage");
 const fetch = require("node-fetch");
-const notifier = require("node-notifier");
 const getincomegrabber = require("./js/grabber/getincomegrabber.js");
 const peerberrygrabber = require("./js/grabber/peerberrygrabber.js");
 const bondstergrabber = require("./js/grabber/bondstergrabber.js");
@@ -209,24 +208,21 @@ async function checkForUpdate(event) {
       return new Date(l.published_at) < new Date(u.published_at) ? 1 : -1;
     });
     if (json[0].name != app.getVersion()) {
-      notifier.notify(
-        {
-          title: "New Version available",
-          message: "A new release was found: " + json[0].name + ". Click to download update!",
-          icon: path.join(__dirname, "logo192.png"), // Absolute path (doesn't work on balloons)
-          wait: true,
-        },
-        function (err, response, metadata) {}
-      );
+      var notification = new Notification({ title: "New Version available", body: "A new release was found: " + json[0].name + ". Click to download update!" });
+      notification.show();
+
+      notification.on("click", (event, arg) => {
+        const url = "https://github.com/exAphex/p2pmanager/releases/";
+        require("electron").shell.openExternal(url);
+      });
       event.reply("update-app", { version: json[0].name });
     }
   }
 }
 
-notifier.on("click", function (notifierObject, options, event) {
-  const url = "https://github.com/exAphex/p2pmanager/releases/";
-  require("electron").shell.openExternal(url);
-});
+/*notifier.on("click", function (notifierObject, options, event) {
+  
+});*/
 
 function updateAccountBalances(id, balanceData) {
   var balances = store.getSync("balance_" + id);
