@@ -3,47 +3,6 @@ import React from "react";
 class OverviewTileLine extends React.Component {
   state = { total: "DASHBOARD" };
 
-  calculcateHistoricTimeLine(accounts) {
-    var accs = [];
-    accounts.forEach((element) => {
-      var elem = element;
-      var obj = {};
-      var balances = element.balances;
-      var minDate = this.getMinDate(balances);
-      var todayDate = this.getTodayDate();
-      var lastObj = null;
-      while (minDate <= todayDate) {
-        if (element.balances[minDate]) {
-          lastObj = element.balances[minDate];
-        }
-        obj[minDate] = lastObj;
-        var cursorDate = new Date(minDate);
-        cursorDate.setDate(cursorDate.getDate() + 1);
-        minDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split("T")[0];
-      }
-      elem.balances = obj;
-      accs.push(element);
-    });
-    return accs;
-  }
-
-  getTodayDate() {
-    var today = new Date();
-    var minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
-    return minDate;
-  }
-
-  getMinDate(balances) {
-    var today = new Date();
-    var minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
-    for (var b in balances) {
-      if (minDate > b) {
-        minDate = b;
-      }
-    }
-    return minDate;
-  }
-
   toCurrencyString(amount) {
     if (!amount) {
       amount = 0;
@@ -116,7 +75,7 @@ class OverviewTileLine extends React.Component {
   }
 
   render() {
-    var accs = this.calculcateHistoricTimeLine(this.props.accounts);
+    var accs = this.props.accounts;
     var total = this.calculateTotal(accs);
     var diffDay = this.calculateDiffDayByProperty(accs, this.props.property, total);
     var diffWeek = this.calculateDiffWeekByProperty(accs, this.props.property, total);

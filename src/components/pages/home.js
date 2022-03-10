@@ -6,7 +6,19 @@ import OverviewTile from "../tile/overviewtile";
 const { ipcRenderer } = window.require("electron");
 
 class Home extends Component {
-  state = { accounts: [], timestamp: new Date(), chartData: {}, total: 0 };
+  state = {
+    accounts: [],
+    timestamp: new Date(),
+    chartData: {},
+    total: 0,
+    selectedInterval: "0",
+    interval: [
+      { name: "Last 24 hours", type: "0" },
+      { name: "Last week", type: "1" },
+      { name: "Last month", type: "2" },
+      { name: "Last year", type: "3" },
+    ],
+  };
 
   componentDidMount() {
     ipcRenderer.removeAllListeners("list-accounts-reply");
@@ -33,8 +45,10 @@ class Home extends Component {
         total += bal.total;
       }
 
+      accounts = this.populateHistoricTimeLine(accounts);
+
       this.setState({
-        accounts: arg,
+        accounts: accounts,
         showNewAccountModal: false,
         showDeleteAccountModal: false,
         total: total,
@@ -66,6 +80,8 @@ class Home extends Component {
         }
       }
 
+      accounts = this.populateHistoricTimeLine(accounts);
+
       this.setState({
         accounts: accounts,
         chartData: {
@@ -96,6 +112,47 @@ class Home extends Component {
 
     ipcRenderer.send("list-accounts", "test");
     ipcRenderer.send("update-app", "");
+  }
+
+  getTodayDate() {
+    var today = new Date();
+    var minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    return minDate;
+  }
+
+  getMinDate(balances) {
+    var today = new Date();
+    var minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    for (var b in balances) {
+      if (minDate > b) {
+        minDate = b;
+      }
+    }
+    return minDate;
+  }
+
+  populateHistoricTimeLine(accounts) {
+    var accs = [];
+    accounts.forEach((element) => {
+      var elem = element;
+      var obj = {};
+      var balances = element.balances;
+      var minDate = this.getMinDate(balances);
+      var todayDate = this.getTodayDate();
+      var lastObj = null;
+      while (minDate <= todayDate) {
+        if (element.balances[minDate]) {
+          lastObj = element.balances[minDate];
+        }
+        obj[minDate] = lastObj;
+        var cursorDate = new Date(minDate);
+        cursorDate.setDate(cursorDate.getDate() + 1);
+        minDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+      }
+      elem.balances = obj;
+      accs.push(element);
+    });
+    return accs;
   }
 
   collectChartData(accounts, prop) {
@@ -142,6 +199,17 @@ class Home extends Component {
     this.setState({ accounts: accounts });
   }
 
+  handleChangeType(evt) {
+    var types = this.state.interval;
+    for (var i = 0; i < types.length; i++) {
+      if (types[i].name === evt.target.value) {
+        this.setState({ selectedInterval: types[i].type });
+        break;
+      }
+    }
+    return "0";
+  }
+
   render() {
     return (
       <div className="bg-white shadow-md rounded my-0">
@@ -153,13 +221,24 @@ class Home extends Component {
           <div className="flex flex-wrap space-x-2 items-center">
             <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black"></p>
             <div className="relative w-auto pl-1 flex-initial p-1 ">
-              <div className="shadow rounded-lg flex mr-2">
-                <button onClick={() => this.onRefreshAccounts()} type="button" className="rounded-lg inline-flex items-center bg-white hover:text-purple-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span className="hidden md:block ml-2">Refresh</span>
-                </button>
+              <div className="flex gap-2">
+                <select onChange={(evt) => this.handleChangeType(evt)} className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full">
+                  {this.state.interval
+                    .sort(function (l, u) {
+                      return l.type > u.type ? 1 : -1;
+                    })
+                    .map((item) => (
+                      <option>{item.name}</option>
+                    ))}
+                </select>
+                <div className="shadow rounded-lg flex mr-2">
+                  <button onClick={() => this.onRefreshAccounts()} type="button" className="rounded-lg inline-flex items-center bg-white hover:text-purple-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span className="hidden md:block ml-2">Refresh</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -170,14 +249,28 @@ class Home extends Component {
           </div>
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <OverviewTile accounts={this.state.accounts}></OverviewTile>
+          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts}></OverviewTile>
           <div>
             {this.state.accounts
               .sort(function (l, u) {
                 return l.name > u.name ? 1 : -1;
               })
               .map((item) => (
-                <Tile key={item.id} errorMessage={item.errorMessage} isError={item.isError} isLoading={item.isLoading} total={item.total} title={item.name} showIndicator="true" invested={item.invested} uninvested={item.uninvested} loss={item.loss} profit={item.profit}></Tile>
+                <Tile
+                  key={item.id}
+                  balances={item.balances}
+                  deltaOption={this.state.selectedInterval}
+                  errorMessage={item.errorMessage}
+                  isError={item.isError}
+                  isLoading={item.isLoading}
+                  total={item.total}
+                  title={item.name}
+                  showIndicator="true"
+                  invested={item.invested}
+                  uninvested={item.uninvested}
+                  loss={item.loss}
+                  profit={item.profit}
+                ></Tile>
               ))}
           </div>
         </div>

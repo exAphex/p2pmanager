@@ -2,6 +2,34 @@ import React from "react";
 import LoadingSpin from "react-loading-spin";
 
 class Tile extends React.Component {
+  getDeltaDay(option) {
+    var retDay = new Date();
+    retDay.setDate(retDay.getDate() - 1);
+    switch (option) {
+      case "1":
+        retDay = new Date();
+        retDay.setDate(retDay.getDate() - 7);
+        break;
+      case "2":
+        retDay = new Date();
+        retDay.setMonth(retDay.getMonth() - 1);
+        break;
+      case "3":
+        retDay = new Date();
+        retDay.setFullYear(retDay.getFullYear() - 1);
+    }
+    return retDay;
+  }
+
+  getDeltaDayValue(balances, date) {
+    var dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    if (!balances[dateString]) {
+      return 0;
+    } else {
+      return balances[dateString].total;
+    }
+  }
+
   toCurrencyString(amount) {
     if (!amount) {
       amount = 0;
@@ -30,6 +58,9 @@ class Tile extends React.Component {
   }
 
   render() {
+    var deltaDay = this.getDeltaDay(this.props.deltaOption);
+    var deltaDayValue = this.getDeltaDayValue(this.props.balances, deltaDay);
+    var delta = this.props.total - deltaDayValue;
     return (
       <div className="inline-block w-full sm:w-1/2 sm:my-2 lg:w-1/3 p-2">
         <div className="align-bottom bg-white shadow w-full bg-white p-4">
@@ -53,8 +84,9 @@ class Tile extends React.Component {
               <div className="flex flex-wrap space-x-2 items-center pr-3">
                 <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black">{this.toCurrencyString(this.props.total)}</p>
                 {this.props.showIndicator === "true" ? (
-                  <div className={"relative w-auto pl-1 flex-initial text-xs " + (this.props.profit >= 0 ? "text-green-800 bg-green-200" : "text-red-800 bg-red-200") + " rounded-md p-1 "}>
-                    {this.props.profit >= 0 ? (
+                  <div className={"relative w-auto pl-1 flex flex-row items-center text-xs " + (delta >= 0 ? "text-green-800 bg-green-200" : "text-red-800 bg-red-200") + " rounded-md p-1 "}>
+                    <div className="text-base font-bold">{(delta >= 0 ? "+" : "-") + this.toCurrencyString(delta)}</div>
+                    {delta >= 0 ? (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                       </svg>
