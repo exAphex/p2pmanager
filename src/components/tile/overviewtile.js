@@ -1,5 +1,4 @@
 import React from "react";
-import OverviewTileLine from "./overviewtileline";
 
 class OverviewTile extends React.Component {
   toCurrencyString(amount) {
