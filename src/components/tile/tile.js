@@ -20,7 +20,7 @@ class Tile extends React.Component {
         break;
       default:
         retDay = new Date();
-        retDay.setDate(retDay.getDate() - 7);
+        retDay.setDate(retDay.getDate() - 1);
         break;
     }
     return retDay;
