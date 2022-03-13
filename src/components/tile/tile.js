@@ -17,6 +17,11 @@ class Tile extends React.Component {
       case "3":
         retDay = new Date();
         retDay.setFullYear(retDay.getFullYear() - 1);
+        break;
+      default:
+        retDay = new Date();
+        retDay.setDate(retDay.getDate() - 7);
+        break;
     }
     return retDay;
   }

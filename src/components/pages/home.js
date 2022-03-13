@@ -10,7 +10,6 @@ class Home extends Component {
     accounts: [],
     timestamp: new Date(),
     chartData: {},
-    total: 0,
     selectedInterval: "0",
     interval: [
       { name: "Last 24 hours", type: "0" },
@@ -32,7 +31,6 @@ class Home extends Component {
 
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
       var accounts = arg;
-      var total = 0;
       for (var i = 0; i < accounts.length; i++) {
         var bal = this.getLatestBalance(accounts[i].balances);
         accounts[i].total = bal.total;
@@ -41,8 +39,6 @@ class Home extends Component {
         accounts[i].loss = bal.loss;
         accounts[i].profit = bal.profit;
         accounts[i].isError = false;
-
-        total += bal.total;
       }
 
       accounts = this.populateHistoricTimeLine(accounts);
@@ -51,7 +47,6 @@ class Home extends Component {
         accounts: accounts,
         showNewAccountModal: false,
         showDeleteAccountModal: false,
-        total: total,
         chartData: {
           items: [
             { name: "total", data: this.collectChartData(accounts, "total") },

@@ -2,6 +2,13 @@ import React, { Component } from "react";
 import AccountModal from "../modals/accountmodal";
 import DeleteAccountModal from "../modals/deleteaccountmodal";
 import { v1 as uuidv1 } from "uuid";
+import bondsterLogo from "../../assets/bondster.png";
+import esketitLogo from "../../assets/esketit.ico";
+import estateGuruLogo from "../../assets/estateguru.png";
+import getIncomeLogo from "../../assets/getincome.ico";
+import lendermarketLogo from "../../assets/lendermarket.png";
+import lendsecuredLogo from "../../assets/lendsecured.png";
+import peerBerryLogo from "../../assets/peerberry.png";
 const { ipcRenderer } = window.require("electron");
 
 class Settings extends Component {
@@ -56,19 +63,19 @@ class Settings extends Component {
   getIconByAccountType(type) {
     switch (type) {
       case "GetIncome":
-        return <img width="24" height="24" src={"/img/getincome.ico"} alt="GetIncome" />;
+        return <img width="24" height="24" src={getIncomeLogo} alt="GetIncome" />;
       case "LendSecured":
-        return <img width="24" height="24" src={"/img/lendsecured.png"} alt="LendSecured" />;
+        return <img width="24" height="24" src={lendsecuredLogo} alt="LendSecured" />;
       case "Lendermarket":
-        return <img width="24" height="24" src={"/img/lendermarket.png"} alt="Lendermarket" />;
+        return <img width="24" height="24" src={lendermarketLogo} alt="Lendermarket" />;
       case "PeerBerry":
-        return <img width="24" height="24" src={"/img/peerberry.png"} alt="PeerBerry" />;
+        return <img width="24" height="24" src={peerBerryLogo} alt="PeerBerry" />;
       case "Bondster":
-        return <img width="24" height="24" src={"/img/bondster.png"} alt="Bondster" />;
+        return <img width="24" height="24" src={bondsterLogo} alt="Bondster" />;
       case "EstateGuru":
-        return <img width="24" height="24" src={"/img/estateguru.png"} alt="EstateGuru" />;
+        return <img width="24" height="24" src={estateGuruLogo} alt="EstateGuru" />;
       case "Esketit":
-        return <img width="24" height="24" src={"/img/esketit.ico"} alt="Esketit" />;
+        return <img width="24" height="24" src={esketitLogo} alt="Esketit" />;
       default:
         return null;
     }
