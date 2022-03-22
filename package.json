@@ -1,6 +1,6 @@
 {
   "name": "p2pmanagerdev",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "Aydin Tekin <exaphex@github.com>",
   "description": "P2P Manager app",
   "email": "exaphex@github.com",
@@ -53,7 +53,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "yarn build && electron-builder -m -w -c.extraMetadata.main=build/electron.js --publish always",
+    "deploy": "yarn build && electron-builder -m -w -l -c.extraMetadata.main=build/electron.js --publish always",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron:start": "concurrently -k \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electronmon .\"",
