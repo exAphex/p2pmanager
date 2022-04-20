@@ -9,6 +9,7 @@ import getIncomeLogo from "../../assets/getincome.ico";
 import lendermarketLogo from "../../assets/lendermarket.png";
 import lendsecuredLogo from "../../assets/lendsecured.png";
 import peerBerryLogo from "../../assets/peerberry.png";
+import solanaLogo from "../../assets/solana.png";
 const { ipcRenderer } = window.require("electron");
 
 class Settings extends Component {
@@ -46,13 +47,13 @@ class Settings extends Component {
     this.setShowDeleteAccountModal(true);
   }
 
-  onCreateNewAccount(name, type, user, password, description) {
-    var obj = { id: uuidv1(), name: name, type: type, user: user, password: password, description: description };
+  onCreateNewAccount(name, type, user, password, description, address) {
+    var obj = { id: uuidv1(), name: name, type: type, user: user, password: password, description: description, address: address };
     ipcRenderer.send("add-account", obj);
   }
 
-  onUpdateAccount(id, name, user, password, description) {
-    var obj = { id: id, name: name, user: user, password: password, description: description };
+  onUpdateAccount(id, name, user, password, description, address) {
+    var obj = { id: id, name: name, user: user, password: password, description: description, address: address };
     ipcRenderer.send("update-account", obj);
   }
 
@@ -76,6 +77,8 @@ class Settings extends Component {
         return <img width="24" height="24" src={estateGuruLogo} alt="EstateGuru" />;
       case "Esketit":
         return <img width="24" height="24" src={esketitLogo} alt="Esketit" />;
+      case "Solana":
+        return <img width="24" height="24" src={solanaLogo} alt="Solana" />;
       default:
         return null;
     }
@@ -146,8 +149,8 @@ class Settings extends Component {
           <AccountModal
             isUpdate={this.state.isUpdate}
             account={this.state.selectedAccount}
-            onUpdateAccount={(id, name, user, password, description) => this.onUpdateAccount(id, name, user, password, description)}
-            onCreateNewAccount={(name, type, user, password, description) => this.onCreateNewAccount(name, type, user, password, description)}
+            onUpdateAccount={(id, name, user, password, description, address) => this.onUpdateAccount(id, name, user, password, description, address)}
+            onCreateNewAccount={(name, type, user, password, description, address) => this.onCreateNewAccount(name, type, user, password, description, address)}
             setShowNewAccountModal={(show) => this.setShowNewAccountModal(show)}
           ></AccountModal>
         ) : null}
