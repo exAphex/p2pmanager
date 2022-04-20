@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CryptoTile from "../tile/cryptotile";
 import { getCategoryByType } from "../../utils/utils";
+import HistoricLineChart from "../charts/historiclinechart";
 const { ipcRenderer } = window.require("electron");
 
 class Cryptos extends Component {
@@ -29,11 +30,24 @@ class Cryptos extends Component {
         accounts[i].total = bal.total;
         accounts[i].staked = bal.staked;
         accounts[i].rewards = bal.rewards;
+        accounts[i].price = bal.price;
         accounts[i].isError = false;
       }
 
+      accounts = this.populateHistoricTimeLine(accounts);
+
       this.setState({
         accounts: accounts,
+
+        chartData: {
+          items: [
+            { name: "total", data: this.collectChartData(accounts, "total") },
+            { name: "invested", data: this.collectChartData(accounts, "staked") },
+            { name: "uninvested", data: this.collectChartData(accounts, "rewards") },
+          ],
+          type: "total",
+          timeinterval: "daily",
+        },
       });
     });
 
@@ -44,14 +58,26 @@ class Cryptos extends Component {
           accounts[i].total = arg.data.total;
           accounts[i].staked = arg.data.staked;
           accounts[i].rewards = arg.data.rewards;
+          accounts[i].price = arg.data.price;
           accounts[i].isLoading = false;
           accounts[i].isError = false;
           break;
         }
       }
 
+      accounts = this.populateHistoricTimeLine(accounts);
+
       this.setState({
         accounts: accounts,
+        chartData: {
+          items: [
+            { name: "total", data: this.collectChartData(accounts, "total") },
+            { name: "invested", data: this.collectChartData(accounts, "staked") },
+            { name: "uninvested", data: this.collectChartData(accounts, "rewards") },
+          ],
+          type: "total",
+          timeinterval: "daily",
+        },
       });
     });
 
@@ -69,6 +95,67 @@ class Cryptos extends Component {
     });
 
     ipcRenderer.send("list-accounts", "test");
+  }
+
+  collectChartData(accounts, prop) {
+    var chartObj = {};
+    for (var i = 0; i < accounts.length; i++) {
+      for (var item in accounts[i].balances) {
+        if (!chartObj[item]) {
+          chartObj[item] = accounts[i].balances[item] ? accounts[i].balances[item][prop] * (accounts[i].balances[item]["price"] ? accounts[i].balances[item]["price"] : 0) : 0;
+        } else {
+          chartObj[item] += accounts[i].balances[item] ? accounts[i].balances[item][prop] * (accounts[i].balances[item]["price"] ? accounts[i].balances[item]["price"] : 0) : 0;
+        }
+      }
+    }
+
+    var chartArr = [];
+    for (var chartItem in chartObj) {
+      chartArr.push({ time: chartItem, total: chartObj[chartItem] });
+    }
+
+    return chartArr;
+  }
+
+  populateHistoricTimeLine(accounts) {
+    var accs = [];
+    accounts.forEach((element) => {
+      var elem = element;
+      var obj = {};
+      var balances = element.balances;
+      var minDate = this.getMinDate(balances);
+      var todayDate = this.getTodayDate();
+      var lastObj = null;
+      while (minDate <= todayDate) {
+        if (element.balances[minDate]) {
+          lastObj = element.balances[minDate];
+        }
+        obj[minDate] = lastObj;
+        var cursorDate = new Date(minDate);
+        cursorDate.setDate(cursorDate.getDate() + 1);
+        minDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+      }
+      elem.balances = obj;
+      accs.push(element);
+    });
+    return accs;
+  }
+
+  getTodayDate() {
+    var today = new Date();
+    var minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    return minDate;
+  }
+
+  getMinDate(balances) {
+    var today = new Date();
+    var minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    for (var b in balances) {
+      if (minDate > b) {
+        minDate = b;
+      }
+    }
+    return minDate;
   }
 
   onRefreshAccounts() {
@@ -136,6 +223,11 @@ class Cryptos extends Component {
             </div>
           </div>
         </div>
+        <div className="grid grid-cols-6">
+          <div className="col-start-2 col-span-4">
+            <HistoricLineChart chartData={this.state.chartData}></HistoricLineChart>
+          </div>
+        </div>
         <div>
           {this.state.accounts
             .sort(function (l, u) {
@@ -151,6 +243,7 @@ class Cryptos extends Component {
                 isLoading={item.isLoading}
                 rewards={item.rewards}
                 total={item.total}
+                price={item.price}
                 staked={item.staked}
                 title={item.name}
                 showIndicator="true"

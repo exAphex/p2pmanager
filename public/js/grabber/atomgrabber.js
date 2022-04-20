@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 const api = "https://lcd-cosmos.cosmostation.io/cosmos/bank/v1beta1/balances/";
 const apiStake = "https://lcd-cosmos.cosmostation.io/cosmos/staking/v1beta1/delegations/";
 const apiReward = "https://lcd-cosmos.cosmostation.io/cosmos/distribution/v1beta1/delegators/";
+const priceAPI = "https://api.coingecko.com/api/v3/simple/price?vs_currencies=eur&ids=cosmos";
 
 const getATOM = async (address) => {
   const response = await fetch(api + address, { method: "GET", headers: { "Content-Type": "application/json", Accept: "application/json", "User-Agent": "PostmanRuntime/7.26.8" } });
@@ -34,7 +35,10 @@ const getATOM = async (address) => {
     total += rewards;
   }
 
-  var retObj = { total: parseFloat(total / 1000000), staked: parseFloat(stake / 1000000), rewards: parseFloat(rewards / 1000000) };
+  const responsePrice = await fetch(priceAPI, { method: "GET", headers: { "Content-Type": "application/json", Accept: "application/json", "User-Agent": "PostmanRuntime/7.26.8" } });
+  const jsonPrice = await responsePrice.json();
+
+  var retObj = { total: parseFloat(total / 1000000), staked: parseFloat(stake / 1000000), rewards: parseFloat(rewards / 1000000), price: parseFloat(jsonPrice.cosmos.eur) };
   return retObj;
 };
 

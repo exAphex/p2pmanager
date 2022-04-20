@@ -58,6 +58,17 @@ class CryptoTile extends React.Component {
     return "Unkown error!";
   }
 
+  toCurrencyString(amount) {
+    if (!amount) {
+      amount = 0;
+    }
+    return amount.toLocaleString("de-DE", {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: 2,
+    });
+  }
+
   render() {
     var deltaDay = this.getDeltaDay(this.props.deltaOption);
     var deltaDayValue = this.getDeltaDayValue(this.props.balances, deltaDay);
@@ -86,7 +97,7 @@ class CryptoTile extends React.Component {
                 <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black">{this.toFixed(this.props.total)}</p>
                 {this.props.showIndicator === "true" ? (
                   <div className={"relative w-auto pl-1 flex flex-row items-center text-xs " + (delta >= 0 ? "text-green-800 bg-green-200" : "text-red-800 bg-red-200") + " rounded-md p-1 "}>
-                    <div className="text-base font-bold">{(delta >= 0 ? "+" : "-") + this.toFixed(delta)}</div>
+                    <div className="text-base font-bold">{(delta >= 0 ? "+" : "-") + this.toFixed(delta) + " (" + this.toCurrencyString(delta * this.props.price) + ")"}</div>
                     {delta >= 0 ? (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -103,19 +114,19 @@ class CryptoTile extends React.Component {
             <div className="flex w-full text-s">
               <div className="flex w-full">
                 <div className="flex-1 pr-3 text-left font-semibold">Total</div>
-                <div className="flex-1 px-3 text-right">{this.toFixed(this.props.total)}</div>
+                <div className="flex-1 px-3 text-right">{this.toFixed(this.props.total) + " (" + this.toCurrencyString(this.props.total * this.props.price) + ")"}</div>
               </div>
             </div>
             <div className="flex w-full text-s">
               <div className="flex w-full">
                 <div className="flex-1 pr-3 text-left font-semibold">Staked</div>
-                <div className="flex-1 px-3 text-right">{this.toFixed(this.props.staked)}</div>
+                <div className="flex-1 px-3 text-right">{this.toFixed(this.props.staked) + " (" + this.toCurrencyString(this.props.staked * this.props.price) + ")"}</div>
               </div>
             </div>
             <div className="flex w-full text-s">
               <div className="flex w-full">
                 <div className="flex-1 pr-3 text-left font-semibold">Unclaimed rewards</div>
-                <div className="flex-1 px-3 text-right">{this.toFixed(this.props.rewards)}</div>
+                <div className="flex-1 px-3 text-right">{this.toFixed(this.props.rewards) + " (" + this.toCurrencyString(this.props.rewards * this.props.price) + ")"}</div>
               </div>
             </div>
           </div>

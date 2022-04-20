@@ -211,7 +211,7 @@ class P2P extends Component {
     return (
       <div className="bg-white shadow-md rounded my-0">
         <div className="flex items-center justify-center h-14 border-b font-bold text-4xl">
-          <div>Home</div>
+          <div>P2P</div>
         </div>
 
         <div className="m dax-w-full mx-4 py-0 sm:mx-auto sm:px-6 lg:px-8">
