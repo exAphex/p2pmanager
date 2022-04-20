@@ -112,6 +112,12 @@ class CryptoTile extends React.Component {
                 <div className="flex-1 px-3 text-right">{this.toFixed(this.props.staked)}</div>
               </div>
             </div>
+            <div className="flex w-full text-s">
+              <div className="flex w-full">
+                <div className="flex-1 pr-3 text-left font-semibold">Unclaimed rewards</div>
+                <div className="flex-1 px-3 text-right">{this.toFixed(this.props.rewards)}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -11,8 +11,8 @@ class AccountModal extends Component {
     accountAddress: "",
     isUpdate: false,
     updateAccountId: 0,
-    type: "Bondster",
-    category: "P2P",
+    type: "ATOM",
+    category: "CRYPTO",
     types: getAccountTypes(),
   };
 

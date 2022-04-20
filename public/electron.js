@@ -13,6 +13,7 @@ const lendsecuredgrabber = require("./js/grabber/lendsecuredgrabber.js");
 const lendermarketgrabber = require("./js/grabber/lendermarketgrabber.js");
 const esketitgrabber = require("./js/grabber/esketitgrabber.js");
 const solanagrabber = require("./js/grabber/solanagrabber.js");
+const atomgrabber = require("./js/grabber/atomgrabber.js");
 
 ipcMain.on("query-account", (event, arg) => {
   try {
@@ -114,6 +115,18 @@ ipcMain.on("query-account", (event, arg) => {
           case "Solana":
             solanagrabber
               .getSolana(accounts[i].address)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
+            break;
+          case "ATOM":
+            atomgrabber
+              .getATOM(accounts[i].address)
               .then((data) => {
                 updateAccountBalances(accounts[i].id, data);
                 event.reply("query-account-reply", { id: accounts[i].id, data: data });

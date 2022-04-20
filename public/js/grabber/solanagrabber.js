@@ -17,7 +17,7 @@ const getSolana = async (address) => {
     total += obj.amount * 1;
     stake += obj.amount * 1;
   }
-  var retObj = { total: parseFloat(total / 1000000000), staked: parseFloat(stake / 1000000000) };
+  var retObj = { total: parseFloat(total / 1000000000), staked: parseFloat(stake / 1000000000), rewards: 0 };
   return retObj;
 };
 

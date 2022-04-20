@@ -28,6 +28,7 @@ class Cryptos extends Component {
         var bal = this.getLatestBalance(accounts[i].balances);
         accounts[i].total = bal.total;
         accounts[i].staked = bal.staked;
+        accounts[i].rewards = bal.rewards;
         accounts[i].isError = false;
       }
 
@@ -42,6 +43,7 @@ class Cryptos extends Component {
         if (accounts[i].id === arg.id) {
           accounts[i].total = arg.data.total;
           accounts[i].staked = arg.data.staked;
+          accounts[i].rewards = arg.data.rewards;
           accounts[i].isLoading = false;
           accounts[i].isError = false;
           break;
@@ -140,7 +142,19 @@ class Cryptos extends Component {
               return l.name > u.name ? 1 : -1;
             })
             .map((item) => (
-              <CryptoTile key={item.id} balances={item.balances} deltaOption={this.state.selectedInterval} errorMessage={item.errorMessage} isError={item.isError} isLoading={item.isLoading} total={item.total} staked={item.staked} title={item.name} showIndicator="true"></CryptoTile>
+              <CryptoTile
+                key={item.id}
+                balances={item.balances}
+                deltaOption={this.state.selectedInterval}
+                errorMessage={item.errorMessage}
+                isError={item.isError}
+                isLoading={item.isLoading}
+                rewards={item.rewards}
+                total={item.total}
+                staked={item.staked}
+                title={item.name}
+                showIndicator="true"
+              ></CryptoTile>
             ))}
         </div>
       </div>

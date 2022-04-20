@@ -10,6 +10,7 @@ import lendermarketLogo from "../../assets/lendermarket.png";
 import lendsecuredLogo from "../../assets/lendsecured.png";
 import peerBerryLogo from "../../assets/peerberry.png";
 import solanaLogo from "../../assets/solana.png";
+import atomLogo from "../../assets/atom.ico";
 const { ipcRenderer } = window.require("electron");
 
 class Settings extends Component {
@@ -79,6 +80,8 @@ class Settings extends Component {
         return <img width="24" height="24" src={esketitLogo} alt="Esketit" />;
       case "Solana":
         return <img width="24" height="24" src={solanaLogo} alt="Solana" />;
+      case "ATOM":
+        return <img width="24" height="24" src={atomLogo} alt="ATOM" />;
       default:
         return null;
     }

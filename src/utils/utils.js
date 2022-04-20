@@ -7,6 +7,8 @@ const types = [
   { name: "LendSecured", type: "LendSecured", category: "P2P" },
   { name: "PeerBerry", type: "PeerBerry", category: "P2P" },
   { name: "Solana", type: "Solana", category: "CRYPTO" },
+  { name: "KAVA", type: "KAVA", category: "CRYPTO" },
+  { name: "ATOM", type: "ATOM", category: "CRYPTO" },
 ];
 
 export const getAccountTypes = () => {
