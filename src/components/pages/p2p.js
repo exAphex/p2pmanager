@@ -32,7 +32,7 @@ class P2P extends Component {
 
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
       var accounts = arg.filter(function (a) {
-        return getCategoryByType(a.type) == "P2P";
+        return getCategoryByType(a.type) === "P2P";
       });
       for (var i = 0; i < accounts.length; i++) {
         var bal = this.getLatestBalance(accounts[i].balances);

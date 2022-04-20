@@ -9,6 +9,7 @@ const types = [
   { name: "Solana", type: "Solana", category: "CRYPTO" },
   { name: "KAVA", type: "KAVA", category: "CRYPTO" },
   { name: "ATOM", type: "ATOM", category: "CRYPTO" },
+  { name: "LUNA", type: "LUNA", category: "CRYPTO" },
 ];
 
 export const getAccountTypes = () => {

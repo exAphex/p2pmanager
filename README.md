@@ -1,8 +1,10 @@
 # P2PManager
 
-P2PManager provides an overview of your p2p investments at a central place.
+P2PManager provides an overview of your p2p and crypto investments at a central place.
 
 ## Supported Platforms
+
+### P2P
 
 - GetIncome
 - Bondster
@@ -12,6 +14,12 @@ P2PManager provides an overview of your p2p investments at a central place.
 - LendSecured
 - Lendermarket
 - Esketit
+
+### Cryptos
+
+- ATOM
+- KAVA
+- Solana
 
 ## Screenshots
 

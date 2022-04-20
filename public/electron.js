@@ -15,6 +15,7 @@ const esketitgrabber = require("./js/grabber/esketitgrabber.js");
 const solanagrabber = require("./js/grabber/solanagrabber.js");
 const atomgrabber = require("./js/grabber/atomgrabber.js");
 const kavagrabber = require("./js/grabber/kavagrabber.js");
+const terragrabber = require("./js/grabber/terragrabber.js");
 
 ipcMain.on("query-account", (event, arg) => {
   try {
@@ -140,6 +141,18 @@ ipcMain.on("query-account", (event, arg) => {
           case "KAVA":
             kavagrabber
               .getKAVA(accounts[i].address)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
+            break;
+          case "LUNA":
+            terragrabber
+              .getLUNA(accounts[i].address)
               .then((data) => {
                 updateAccountBalances(accounts[i].id, data);
                 event.reply("query-account-reply", { id: accounts[i].id, data: data });

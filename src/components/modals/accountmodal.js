@@ -118,7 +118,7 @@ class AccountModal extends Component {
                       </div>
                     ) : null}
 
-                    {this.state.category == "P2P" ? (
+                    {this.state.category === "P2P" ? (
                       <div className="mb-1 w-full flex-col mt-3">
                         <label className="font-medium text-gray-800 py-2">Account name</label>
                         <input value={this.state.accountUser} onChange={(evt) => this.updateAccountName(evt)} type="text" placeholder="john.doe@mail.com" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
@@ -127,7 +127,7 @@ class AccountModal extends Component {
                       <></>
                     )}
 
-                    {this.state.category == "P2P" ? (
+                    {this.state.category === "P2P" ? (
                       <div className="mb-1 w-full flex-col mt-3">
                         <label className="font-medium text-gray-800 py-2">Password</label>
                         <input value={this.state.accountPassword} onChange={(evt) => this.updateAccountPassword(evt)} type="text" placeholder="Test123" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
@@ -136,7 +136,7 @@ class AccountModal extends Component {
                       <></>
                     )}
 
-                    {this.state.category == "CRYPTO" ? (
+                    {this.state.category === "CRYPTO" ? (
                       <div className="mb-1 w-full flex-col mt-3">
                         <label className="font-medium text-gray-800 py-2">Address</label>
                         <input value={this.state.accountAddress} onChange={(evt) => this.updateAddress(evt)} type="text" placeholder="0x000000000" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />

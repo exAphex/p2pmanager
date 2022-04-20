@@ -12,6 +12,7 @@ import peerBerryLogo from "../../assets/peerberry.png";
 import solanaLogo from "../../assets/solana.png";
 import atomLogo from "../../assets/atom.ico";
 import kavaLogo from "../../assets/kava.png";
+import terraLogo from "../../assets/terra.png";
 const { ipcRenderer } = window.require("electron");
 
 class Settings extends Component {
@@ -85,6 +86,8 @@ class Settings extends Component {
         return <img width="24" height="24" src={atomLogo} alt="ATOM" />;
       case "KAVA":
         return <img width="24" height="24" src={kavaLogo} alt="KAVA" />;
+      case "LUNA":
+        return <img width="24" height="24" src={terraLogo} alt="LUNA" />;
       default:
         return null;
     }

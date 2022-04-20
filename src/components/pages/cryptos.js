@@ -23,7 +23,7 @@ class Cryptos extends Component {
 
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
       var accounts = arg.filter(function (a) {
-        return getCategoryByType(a.type) == "CRYPTO";
+        return getCategoryByType(a.type) === "CRYPTO";
       });
       for (var i = 0; i < accounts.length; i++) {
         var bal = this.getLatestBalance(accounts[i].balances);
@@ -42,8 +42,8 @@ class Cryptos extends Component {
         chartData: {
           items: [
             { name: "total", data: this.collectChartData(accounts, "total") },
-            { name: "invested", data: this.collectChartData(accounts, "staked") },
-            { name: "uninvested", data: this.collectChartData(accounts, "rewards") },
+            { name: "staked", data: this.collectChartData(accounts, "staked") },
+            { name: "rewards", data: this.collectChartData(accounts, "rewards") },
           ],
           type: "total",
           timeinterval: "daily",
@@ -72,8 +72,8 @@ class Cryptos extends Component {
         chartData: {
           items: [
             { name: "total", data: this.collectChartData(accounts, "total") },
-            { name: "invested", data: this.collectChartData(accounts, "staked") },
-            { name: "uninvested", data: this.collectChartData(accounts, "rewards") },
+            { name: "staked", data: this.collectChartData(accounts, "staked") },
+            { name: "rewards", data: this.collectChartData(accounts, "rewards") },
           ],
           type: "total",
           timeinterval: "daily",
