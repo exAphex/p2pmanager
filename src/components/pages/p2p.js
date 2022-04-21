@@ -246,7 +246,7 @@ class P2P extends Component {
           </div>
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts}></OverviewTile>
+          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="P2P" colNum="5"></OverviewTile>
           <div>
             {this.state.accounts
               .sort(function (l, u) {

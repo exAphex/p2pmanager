@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import CryptoTile from "../tile/cryptotile";
 import { getCategoryByType } from "../../utils/utils";
 import HistoricLineChart from "../charts/historiclinechart";
+import OverviewTile from "../tile/overviewtile";
 const { ipcRenderer } = window.require("electron");
 
 class Cryptos extends Component {
@@ -199,7 +200,7 @@ class Cryptos extends Component {
         <div className="flex items-center justify-center h-14 border-b font-bold text-4xl">
           <div>Cryptos</div>
         </div>
-        <div className="flex flex-wrap space-x-2 items-center">
+        <div className="flex flex-wrap space-x-2 items-center pr-10">
           <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black"></p>
           <div className="relative w-auto pl-1 flex-initial p-1 ">
             <div className="flex gap-2">
@@ -228,27 +229,31 @@ class Cryptos extends Component {
             <HistoricLineChart chartData={this.state.chartData}></HistoricLineChart>
           </div>
         </div>
-        <div>
-          {this.state.accounts
-            .sort(function (l, u) {
-              return l.name > u.name ? 1 : -1;
-            })
-            .map((item) => (
-              <CryptoTile
-                key={item.id}
-                balances={item.balances}
-                deltaOption={this.state.selectedInterval}
-                errorMessage={item.errorMessage}
-                isError={item.isError}
-                isLoading={item.isLoading}
-                rewards={item.rewards}
-                total={item.total}
-                price={item.price}
-                staked={item.staked}
-                title={item.name}
-                showIndicator="true"
-              ></CryptoTile>
-            ))}
+        <div className="pl-8 pr-8">
+          <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
+          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="CRYPTO" colNum="3"></OverviewTile>
+          <div>
+            {this.state.accounts
+              .sort(function (l, u) {
+                return l.name > u.name ? 1 : -1;
+              })
+              .map((item) => (
+                <CryptoTile
+                  key={item.id}
+                  balances={item.balances}
+                  deltaOption={this.state.selectedInterval}
+                  errorMessage={item.errorMessage}
+                  isError={item.isError}
+                  isLoading={item.isLoading}
+                  rewards={item.rewards}
+                  total={item.total}
+                  price={item.price}
+                  staked={item.staked}
+                  title={item.name}
+                  showIndicator="true"
+                ></CryptoTile>
+              ))}
+          </div>
         </div>
       </div>
     );

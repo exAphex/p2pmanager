@@ -3,6 +3,8 @@ import Tile from "../tile/tile";
 import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
 import OverviewTile from "../tile/overviewtile";
+import { getCategoryByType } from "../../utils/utils";
+import CryptoTile from "../tile/cryptotile";
 const { ipcRenderer } = window.require("electron");
 
 class Home extends Component {
@@ -38,6 +40,9 @@ class Home extends Component {
         accounts[i].uninvested = bal.uninvested;
         accounts[i].loss = bal.loss;
         accounts[i].profit = bal.profit;
+        accounts[i].staked = bal.staked;
+        accounts[i].rewards = bal.rewards;
+        accounts[i].price = bal.price;
         accounts[i].isError = false;
       }
 
@@ -53,6 +58,8 @@ class Home extends Component {
             { name: "invested", data: this.collectChartData(accounts, "invested") },
             { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
             { name: "profit", data: this.collectChartData(accounts, "profit") },
+            { name: "staked", data: this.collectChartData(accounts, "staked") },
+            { name: "rewards", data: this.collectChartData(accounts, "rewards") },
           ],
           type: "total",
           timeinterval: "daily",
@@ -69,6 +76,9 @@ class Home extends Component {
           accounts[i].uninvested = arg.data.uninvested;
           accounts[i].loss = arg.data.loss;
           accounts[i].profit = arg.data.profit;
+          accounts[i].staked = arg.data.staked;
+          accounts[i].rewards = arg.data.rewards;
+          accounts[i].price = arg.data.price;
           accounts[i].isLoading = false;
           accounts[i].isError = false;
           break;
@@ -85,6 +95,8 @@ class Home extends Component {
             { name: "invested", data: this.collectChartData(accounts, "invested") },
             { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
             { name: "profit", data: this.collectChartData(accounts, "profit") },
+            { name: "staked", data: this.collectChartData(accounts, "staked") },
+            { name: "rewards", data: this.collectChartData(accounts, "rewards") },
           ],
           type: "total",
           timeinterval: "daily",
@@ -154,10 +166,14 @@ class Home extends Component {
     var chartObj = {};
     for (var i = 0; i < accounts.length; i++) {
       for (var item in accounts[i].balances) {
+        var balPop = accounts[i].balances[item][prop];
+        if (getCategoryByType(accounts[i].type) === "CRYPTO") {
+          balPop = (accounts[i].balances[item][prop] ? accounts[i].balances[item][prop] : 0) * (accounts[i].balances[item]["price"] ? accounts[i].balances[item]["price"] : 0);
+        }
         if (!chartObj[item]) {
-          chartObj[item] = accounts[i].balances[item] ? accounts[i].balances[item][prop] : 0;
+          chartObj[item] = accounts[i].balances[item] ? balPop : 0;
         } else {
-          chartObj[item] += accounts[i].balances[item] ? accounts[i].balances[item][prop] : 0;
+          chartObj[item] += accounts[i].balances[item] ? balPop : 0;
         }
       }
     }
@@ -244,11 +260,15 @@ class Home extends Component {
           </div>
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts}></OverviewTile>
+          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="OVERVIEW" colNum="7"></OverviewTile>
+          <h2 className="pt-4 font-bold text-1xl">P2P</h2>
           <div>
             {this.state.accounts
               .sort(function (l, u) {
                 return l.name > u.name ? 1 : -1;
+              })
+              .filter(function (item) {
+                return getCategoryByType(item.type) === "P2P";
               })
               .map((item) => (
                 <Tile
@@ -266,6 +286,32 @@ class Home extends Component {
                   loss={item.loss}
                   profit={item.profit}
                 ></Tile>
+              ))}
+          </div>
+          <h2 className="pt-4 font-bold text-1xl">Cryptos</h2>
+          <div>
+            {this.state.accounts
+              .sort(function (l, u) {
+                return l.name > u.name ? 1 : -1;
+              })
+              .filter(function (item) {
+                return getCategoryByType(item.type) === "CRYPTO";
+              })
+              .map((item) => (
+                <CryptoTile
+                  key={item.id}
+                  balances={item.balances}
+                  deltaOption={this.state.selectedInterval}
+                  errorMessage={item.errorMessage}
+                  isError={item.isError}
+                  isLoading={item.isLoading}
+                  rewards={item.rewards}
+                  total={item.total}
+                  price={item.price}
+                  staked={item.staked}
+                  title={item.name}
+                  showIndicator="true"
+                ></CryptoTile>
               ))}
           </div>
         </div>
