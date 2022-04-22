@@ -20,6 +20,7 @@ P2PManager provides an overview of your p2p and crypto investments at a central 
 - ATOM
 - KAVA
 - Solana
+- Terra LUNA
 
 ## Screenshots
 
