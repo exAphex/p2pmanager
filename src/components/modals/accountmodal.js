@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { getAccountTypes, getCategoryByType } from "../../utils/utils";
 
 class AccountModal extends Component {
   state = {
@@ -7,25 +8,19 @@ class AccountModal extends Component {
     accountUser: "",
     accountPassword: "",
     accountDescription: "",
+    accountAddress: "",
     isUpdate: false,
     updateAccountId: 0,
-    type: "Bondster",
-    types: [
-      { name: "Bondster", type: "Bondster" },
-      { name: "EstateGuru", type: "EstateGuru" },
-      { name: "Esketit", type: "Esketit" },
-      { name: "GetIncome", type: "GetIncome" },
-      { name: "Lendermarket", type: "Lendermarket" },
-      { name: "LendSecured", type: "LendSecured" },
-      { name: "PeerBerry", type: "PeerBerry" },
-    ],
+    type: "ATOM",
+    category: "CRYPTO",
+    types: getAccountTypes(),
   };
 
   componentDidMount() {
     if (this.props.isUpdate) {
       var acc = this.props.account;
       if (acc) {
-        this.setState({ accountId: acc.id, accountName: acc.name, type: acc.type, accountUser: acc.user, accountPassword: acc.password, accountDescription: acc.description });
+        this.setState({ accountId: acc.id, accountName: acc.name, type: acc.type, accountUser: acc.user, accountPassword: acc.password, accountDescription: acc.description, accountAddress: acc.address, category: getCategoryByType(acc.type) });
       }
     }
     this.setState({ isUpdate: this.props.isUpdate });
@@ -41,7 +36,7 @@ class AccountModal extends Component {
     var types = this.state.types;
     for (var i = 0; i < types.length; i++) {
       if (types[i].name === evt.target.value) {
-        this.setState({ type: types[i].type });
+        this.setState({ type: types[i].type, category: types[i].category });
         break;
       }
     }
@@ -63,6 +58,12 @@ class AccountModal extends Component {
   updateAccountPassword(evt) {
     this.setState({
       accountPassword: evt.target.value,
+    });
+  }
+
+  updateAddress(evt) {
+    this.setState({
+      accountAddress: evt.target.value,
     });
   }
 
@@ -117,14 +118,32 @@ class AccountModal extends Component {
                       </div>
                     ) : null}
 
-                    <div className="mb-1 w-full flex-col mt-3">
-                      <label className="font-medium text-gray-800 py-2">Account name</label>
-                      <input value={this.state.accountUser} onChange={(evt) => this.updateAccountName(evt)} type="text" placeholder="john.doe@mail.com" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
-                    </div>
-                    <div className="mb-1 w-full flex-col mt-3">
-                      <label className="font-medium text-gray-800 py-2">Password</label>
-                      <input value={this.state.accountPassword} onChange={(evt) => this.updateAccountPassword(evt)} type="text" placeholder="Test123" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
-                    </div>
+                    {this.state.category === "P2P" ? (
+                      <div className="mb-1 w-full flex-col mt-3">
+                        <label className="font-medium text-gray-800 py-2">Account name</label>
+                        <input value={this.state.accountUser} onChange={(evt) => this.updateAccountName(evt)} type="text" placeholder="john.doe@mail.com" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+
+                    {this.state.category === "P2P" ? (
+                      <div className="mb-1 w-full flex-col mt-3">
+                        <label className="font-medium text-gray-800 py-2">Password</label>
+                        <input value={this.state.accountPassword} onChange={(evt) => this.updateAccountPassword(evt)} type="text" placeholder="Test123" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+
+                    {this.state.category === "CRYPTO" ? (
+                      <div className="mb-1 w-full flex-col mt-3">
+                        <label className="font-medium text-gray-800 py-2">Address</label>
+                        <input value={this.state.accountAddress} onChange={(evt) => this.updateAddress(evt)} type="text" placeholder="0x000000000" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
+                      </div>
+                    ) : (
+                      <></>
+                    )}
 
                     <div className="mb-1 w-full flex-col mt-3">
                       <label className="font-medium text-gray-800 py-2">Description</label>
@@ -144,9 +163,9 @@ class AccountModal extends Component {
                   type="button"
                   onClick={() => {
                     if (this.state.isUpdate) {
-                      this.props.onUpdateAccount(this.state.accountId, this.state.accountName, this.state.accountUser, this.state.accountPassword, this.state.accountDescription);
+                      this.props.onUpdateAccount(this.state.accountId, this.state.accountName, this.state.accountUser, this.state.accountPassword, this.state.accountDescription, this.state.accountAddress);
                     } else {
-                      this.props.onCreateNewAccount(this.state.accountName, this.state.type, this.state.accountUser, this.state.accountPassword, this.state.accountDescription);
+                      this.props.onCreateNewAccount(this.state.accountName, this.state.type, this.state.accountUser, this.state.accountPassword, this.state.accountDescription, this.state.accountAddress);
                     }
                   }}
                   className={

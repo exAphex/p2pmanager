@@ -4,10 +4,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
 import OverviewTile from "../tile/overviewtile";
 import { getCategoryByType } from "../../utils/utils";
-import CryptoTile from "../tile/cryptotile";
 const { ipcRenderer } = window.require("electron");
 
-class Home extends Component {
+class P2P extends Component {
   state = {
     accounts: [],
     timestamp: new Date(),
@@ -32,7 +31,9 @@ class Home extends Component {
     });
 
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
-      var accounts = arg;
+      var accounts = arg.filter(function (a) {
+        return getCategoryByType(a.type) === "P2P";
+      });
       for (var i = 0; i < accounts.length; i++) {
         var bal = this.getLatestBalance(accounts[i].balances);
         accounts[i].total = bal.total;
@@ -40,9 +41,6 @@ class Home extends Component {
         accounts[i].uninvested = bal.uninvested;
         accounts[i].loss = bal.loss;
         accounts[i].profit = bal.profit;
-        accounts[i].staked = bal.staked;
-        accounts[i].rewards = bal.rewards;
-        accounts[i].price = bal.price;
         accounts[i].isError = false;
       }
 
@@ -58,8 +56,6 @@ class Home extends Component {
             { name: "invested", data: this.collectChartData(accounts, "invested") },
             { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
             { name: "profit", data: this.collectChartData(accounts, "profit") },
-            { name: "staked", data: this.collectChartData(accounts, "staked") },
-            { name: "rewards", data: this.collectChartData(accounts, "rewards") },
           ],
           type: "total",
           timeinterval: "daily",
@@ -76,9 +72,6 @@ class Home extends Component {
           accounts[i].uninvested = arg.data.uninvested;
           accounts[i].loss = arg.data.loss;
           accounts[i].profit = arg.data.profit;
-          accounts[i].staked = arg.data.staked;
-          accounts[i].rewards = arg.data.rewards;
-          accounts[i].price = arg.data.price;
           accounts[i].isLoading = false;
           accounts[i].isError = false;
           break;
@@ -95,8 +88,6 @@ class Home extends Component {
             { name: "invested", data: this.collectChartData(accounts, "invested") },
             { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
             { name: "profit", data: this.collectChartData(accounts, "profit") },
-            { name: "staked", data: this.collectChartData(accounts, "staked") },
-            { name: "rewards", data: this.collectChartData(accounts, "rewards") },
           ],
           type: "total",
           timeinterval: "daily",
@@ -118,7 +109,6 @@ class Home extends Component {
     });
 
     ipcRenderer.send("list-accounts", "test");
-    ipcRenderer.send("update-app", "");
   }
 
   getTodayDate() {
@@ -166,14 +156,10 @@ class Home extends Component {
     var chartObj = {};
     for (var i = 0; i < accounts.length; i++) {
       for (var item in accounts[i].balances) {
-        var balPop = accounts[i].balances[item][prop];
-        if (getCategoryByType(accounts[i].type) === "CRYPTO") {
-          balPop = (accounts[i].balances[item][prop] ? accounts[i].balances[item][prop] : 0) * (accounts[i].balances[item]["price"] ? accounts[i].balances[item]["price"] : 0);
-        }
         if (!chartObj[item]) {
-          chartObj[item] = accounts[i].balances[item] ? balPop : 0;
+          chartObj[item] = accounts[i].balances[item] ? accounts[i].balances[item][prop] : 0;
         } else {
-          chartObj[item] += accounts[i].balances[item] ? balPop : 0;
+          chartObj[item] += accounts[i].balances[item] ? accounts[i].balances[item][prop] : 0;
         }
       }
     }
@@ -225,7 +211,7 @@ class Home extends Component {
     return (
       <div className="bg-white shadow-md rounded my-0">
         <div className="flex items-center justify-center h-14 border-b font-bold text-4xl">
-          <div>Home</div>
+          <div>P2P</div>
         </div>
 
         <div className="m dax-w-full mx-4 py-0 sm:mx-auto sm:px-6 lg:px-8">
@@ -260,15 +246,11 @@ class Home extends Component {
           </div>
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="OVERVIEW" colNum="7"></OverviewTile>
-          <h2 className="pt-4 font-bold text-1xl">P2P</h2>
+          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="P2P" colNum="5"></OverviewTile>
           <div>
             {this.state.accounts
               .sort(function (l, u) {
                 return l.name > u.name ? 1 : -1;
-              })
-              .filter(function (item) {
-                return getCategoryByType(item.type) === "P2P";
               })
               .map((item) => (
                 <Tile
@@ -288,36 +270,10 @@ class Home extends Component {
                 ></Tile>
               ))}
           </div>
-          <h2 className="pt-4 font-bold text-1xl">Cryptos</h2>
-          <div>
-            {this.state.accounts
-              .sort(function (l, u) {
-                return l.name > u.name ? 1 : -1;
-              })
-              .filter(function (item) {
-                return getCategoryByType(item.type) === "CRYPTO";
-              })
-              .map((item) => (
-                <CryptoTile
-                  key={item.id}
-                  balances={item.balances}
-                  deltaOption={this.state.selectedInterval}
-                  errorMessage={item.errorMessage}
-                  isError={item.isError}
-                  isLoading={item.isLoading}
-                  rewards={item.rewards}
-                  total={item.total}
-                  price={item.price}
-                  staked={item.staked}
-                  title={item.name}
-                  showIndicator="true"
-                ></CryptoTile>
-              ))}
-          </div>
         </div>
       </div>
     );
   }
 }
 
-export default Home;
+export default P2P;

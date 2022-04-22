@@ -12,6 +12,10 @@ const estategurugrabber = require("./js/grabber/estategurugrabber.js");
 const lendsecuredgrabber = require("./js/grabber/lendsecuredgrabber.js");
 const lendermarketgrabber = require("./js/grabber/lendermarketgrabber.js");
 const esketitgrabber = require("./js/grabber/esketitgrabber.js");
+const solanagrabber = require("./js/grabber/solanagrabber.js");
+const atomgrabber = require("./js/grabber/atomgrabber.js");
+const kavagrabber = require("./js/grabber/kavagrabber.js");
+const terragrabber = require("./js/grabber/terragrabber.js");
 
 ipcMain.on("query-account", (event, arg) => {
   try {
@@ -101,6 +105,54 @@ ipcMain.on("query-account", (event, arg) => {
           case "Esketit":
             esketitgrabber
               .grabEsketit(accounts[i].user, accounts[i].password)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
+            break;
+          case "Solana":
+            solanagrabber
+              .getSolana(accounts[i].address)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
+            break;
+          case "ATOM":
+            atomgrabber
+              .getATOM(accounts[i].address)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
+            break;
+          case "KAVA":
+            kavagrabber
+              .getKAVA(accounts[i].address)
+              .then((data) => {
+                updateAccountBalances(accounts[i].id, data);
+                event.reply("query-account-reply", { id: accounts[i].id, data: data });
+              })
+              .catch((e) => {
+                var retObj = { message: arg, error: e };
+                event.reply("query-account-error", retObj);
+              });
+            break;
+          case "LUNA":
+            terragrabber
+              .getLUNA(accounts[i].address)
               .then((data) => {
                 updateAccountBalances(accounts[i].id, data);
                 event.reply("query-account-reply", { id: accounts[i].id, data: data });
