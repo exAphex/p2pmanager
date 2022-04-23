@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Tile from "../tile/tile";
 import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
-import OverviewTile from "../tile/overviewtile";
+import P2POverviewTile from "../tile/p2poverviewtile";
 import { getCategoryByType } from "../../utils/utils";
 const { ipcRenderer } = window.require("electron");
 
@@ -246,7 +246,7 @@ class P2P extends Component {
           </div>
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="P2P" colNum="5"></OverviewTile>
+          <P2POverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="P2P" colNum="5"></P2POverviewTile>
           <div>
             {this.state.accounts
               .sort(function (l, u) {

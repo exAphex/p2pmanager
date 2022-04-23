@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import CryptoTile from "../tile/cryptotile";
 import { getCategoryByType } from "../../utils/utils";
 import HistoricLineChart from "../charts/historiclinechart";
-import OverviewTile from "../tile/overviewtile";
+import CryptoOverviewTile from "../tile/cryptooverviewtile";
 const { ipcRenderer } = window.require("electron");
 
 class Cryptos extends Component {
@@ -231,7 +231,7 @@ class Cryptos extends Component {
         </div>
         <div className="pl-8 pr-8">
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="CRYPTO" colNum="3"></OverviewTile>
+          <CryptoOverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="CRYPTO" colNum="3"></CryptoOverviewTile>
           <div>
             {this.state.accounts
               .sort(function (l, u) {
