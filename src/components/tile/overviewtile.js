@@ -2,6 +2,10 @@ import React from "react";
 import { getCategoryByType } from "../../utils/utils";
 
 class OverviewTile extends React.Component {
+  state = {
+    colNum: 3,
+  };
+
   toCurrencyString(amount) {
     if (!amount) {
       amount = 0;
@@ -11,6 +15,10 @@ class OverviewTile extends React.Component {
       currency: "EUR",
       minimumFractionDigits: 2,
     });
+  }
+
+  componentDidMount() {
+    this.setState({ colNum: this.props.colNum });
   }
 
   getDeltaDay(option) {
@@ -93,8 +101,9 @@ class OverviewTile extends React.Component {
     var deltaObj = this.getDeltaDayValue(this.props.accounts, deltaDay);
     var absObj = this.getDeltaAbsoluteValue(deltaObj, overViewData);
     return (
-      <div className={"shadow p-4 grid grid-cols-" + (this.props.colNum + "")}>
+      <div className={"shadow p-4 grid " + ("grid-cols-" + this.state.colNum)}>
         <div className="pb-2 col-start-1 text-right font-semibold">Total</div>
+
         {this.props.viewType === "P2P" || this.props.viewType === "OVERVIEW" ? (
           <>
             <div className="text-right font-semibold">Invested</div>
