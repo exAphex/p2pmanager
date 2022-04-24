@@ -13,6 +13,8 @@ import solanaLogo from "../../assets/solana.png";
 import atomLogo from "../../assets/atom.ico";
 import kavaLogo from "../../assets/kava.png";
 import terraLogo from "../../assets/terra.png";
+import osmosisLogo from "../../assets/osmosis.ico";
+
 const { ipcRenderer } = window.require("electron");
 
 class Settings extends Component {
@@ -88,6 +90,8 @@ class Settings extends Component {
         return <img width="24" height="24" src={kavaLogo} alt="KAVA" />;
       case "LUNA":
         return <img width="24" height="24" src={terraLogo} alt="LUNA" />;
+      case "OSMO":
+        return <img width="24" height="24" src={osmosisLogo} alt="OSMO" />;
       default:
         return null;
     }

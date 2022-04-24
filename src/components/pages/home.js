@@ -10,6 +10,7 @@ const { ipcRenderer } = window.require("electron");
 class Home extends Component {
   state = {
     accounts: [],
+    accAccounts: [],
     timestamp: new Date(),
     chartData: {},
     selectedInterval: "0",
@@ -33,33 +34,46 @@ class Home extends Component {
 
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
       var accounts = arg;
+      var retAccounts = [
+        { name: "P2P", isError: false, total: 0, balances: {}, type: "Bondster" },
+        { name: "Cryptos", isError: false, total: 0, balances: {}, type: "KAVA" },
+      ];
       for (var i = 0; i < accounts.length; i++) {
+        var index = 0;
         var bal = this.getLatestBalance(accounts[i].balances);
-        accounts[i].total = bal.total;
-        accounts[i].invested = bal.invested;
-        accounts[i].uninvested = bal.uninvested;
-        accounts[i].loss = bal.loss;
-        accounts[i].profit = bal.profit;
-        accounts[i].staked = bal.staked;
-        accounts[i].rewards = bal.rewards;
-        accounts[i].price = bal.price;
-        accounts[i].isError = false;
+
+        if (getCategoryByType(accounts[i].type) === "CRYPTO") {
+          index = 1;
+          retAccounts[index].total += bal.total * (bal.price ? bal.price : 0);
+        } else {
+          index = 0;
+          retAccounts[index].total += bal.total;
+        }
+
+        for (var key in accounts[i].balances) {
+          if (!retAccounts[index].balances[key]) {
+            retAccounts[index].balances[key] = { total: 0 };
+          }
+          if (getCategoryByType(accounts[i].type) === "CRYPTO") {
+            retAccounts[index].balances[key].total += accounts[i].balances[key].total ? accounts[i].balances[key].total * (accounts[i].balances[key].price ? accounts[i].balances[key].price : 0) : 0;
+          } else {
+            retAccounts[index].balances[key].total += accounts[i].balances[key].total ? accounts[i].balances[key].total : 0;
+          }
+        }
       }
 
-      accounts = this.populateHistoricTimeLine(accounts);
+      retAccounts = this.populateHistoricTimeLine(retAccounts);
 
       this.setState({
         accounts: accounts,
+        accAccounts: retAccounts,
         showNewAccountModal: false,
         showDeleteAccountModal: false,
         chartData: {
           items: [
-            { name: "total", data: this.collectChartData(accounts, "total") },
-            { name: "invested", data: this.collectChartData(accounts, "invested") },
-            { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
-            { name: "profit", data: this.collectChartData(accounts, "profit") },
-            { name: "staked", data: this.collectChartData(accounts, "staked") },
-            { name: "rewards", data: this.collectChartData(accounts, "rewards") },
+            { name: "total", data: this.collectChartData(retAccounts, "total") },
+            { name: "P2P", data: this.collectAccChartData(retAccounts[0].type, retAccounts[0].balances, "total") },
+            { name: "Cryptos", data: this.collectAccChartData(retAccounts[1].type, retAccounts[1].balances, "total") },
           ],
           type: "total",
           timeinterval: "daily",
@@ -72,16 +86,30 @@ class Home extends Component {
       for (var i = 0; i < accounts.length; i++) {
         if (accounts[i].id === arg.id) {
           accounts[i].total = arg.data.total;
-          accounts[i].invested = arg.data.invested;
-          accounts[i].uninvested = arg.data.uninvested;
-          accounts[i].loss = arg.data.loss;
-          accounts[i].profit = arg.data.profit;
-          accounts[i].staked = arg.data.staked;
-          accounts[i].rewards = arg.data.rewards;
-          accounts[i].price = arg.data.price;
           accounts[i].isLoading = false;
           accounts[i].isError = false;
           break;
+        }
+      }
+
+      var retAccounts = [
+        { name: "P2P", isError: false, total: 0, balances: {} },
+        { name: "Cryptos", isError: false, total: 0, balances: {} },
+      ];
+      for (var i = 0; i < accounts.length; i++) {
+        var bal = this.getLatestBalance(accounts[i].balances);
+        var index = 0;
+        if (getCategoryByType(accounts[i].type) === "CRYPTO") {
+          index = 1;
+        }
+
+        retAccounts[index].total += bal.total;
+
+        for (var key in accounts[i].balances) {
+          if (!retAccounts[index].balances[key]) {
+            retAccounts[index].balances[key] = { total: 0 };
+          }
+          retAccounts[index].balances[key].total += accounts[i].balances[key].total ? accounts[i].balances[key].total : 0;
         }
       }
 
@@ -89,15 +117,9 @@ class Home extends Component {
 
       this.setState({
         accounts: accounts,
+        accAccounts: retAccounts,
         chartData: {
-          items: [
-            { name: "total", data: this.collectChartData(accounts, "total") },
-            { name: "invested", data: this.collectChartData(accounts, "invested") },
-            { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
-            { name: "profit", data: this.collectChartData(accounts, "profit") },
-            { name: "staked", data: this.collectChartData(accounts, "staked") },
-            { name: "rewards", data: this.collectChartData(accounts, "rewards") },
-          ],
+          items: [{ name: "total", data: this.collectChartData(retAccounts, "total") }],
           type: "total",
           timeinterval: "daily",
         },
@@ -140,21 +162,29 @@ class Home extends Component {
 
   populateHistoricTimeLine(accounts) {
     var accs = [];
+    var minDate = this.getTodayDate;
+
+    accounts.forEach((element) => {
+      var balances = element.balances;
+      if (this.getMinDate(balances) <= minDate) {
+        minDate = this.getMinDate(balances);
+      }
+    });
+
     accounts.forEach((element) => {
       var elem = element;
       var obj = {};
-      var balances = element.balances;
-      var minDate = this.getMinDate(balances);
+      var tempMinDate = minDate;
       var todayDate = this.getTodayDate();
-      var lastObj = null;
-      while (minDate <= todayDate) {
-        if (element.balances[minDate]) {
-          lastObj = element.balances[minDate];
+      var lastObj = { total: 0 };
+      while (tempMinDate <= todayDate) {
+        if (element.balances[tempMinDate]) {
+          lastObj = element.balances[tempMinDate];
         }
-        obj[minDate] = lastObj;
-        var cursorDate = new Date(minDate);
+        obj[tempMinDate] = lastObj;
+        var cursorDate = new Date(tempMinDate);
         cursorDate.setDate(cursorDate.getDate() + 1);
-        minDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        tempMinDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split("T")[0];
       }
       elem.balances = obj;
       accs.push(element);
@@ -167,9 +197,6 @@ class Home extends Component {
     for (var i = 0; i < accounts.length; i++) {
       for (var item in accounts[i].balances) {
         var balPop = accounts[i].balances[item][prop];
-        if (getCategoryByType(accounts[i].type) === "CRYPTO") {
-          balPop = (accounts[i].balances[item][prop] ? accounts[i].balances[item][prop] : 0) * (accounts[i].balances[item]["price"] ? accounts[i].balances[item]["price"] : 0);
-        }
         if (!chartObj[item]) {
           chartObj[item] = accounts[i].balances[item] ? balPop : 0;
         } else {
@@ -183,6 +210,15 @@ class Home extends Component {
       chartArr.push({ time: chartItem, total: chartObj[chartItem] });
     }
 
+    return chartArr;
+  }
+
+  collectAccChartData(type, balances, prop) {
+    var chartArr = [];
+    for (var item in balances) {
+      var balPop = balances[item][prop];
+      chartArr.push({ time: item, total: balPop });
+    }
     return chartArr;
   }
 
@@ -260,59 +296,31 @@ class Home extends Component {
           </div>
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="OVERVIEW" colNum="7"></OverviewTile>
-          <h2 className="pt-4 font-bold text-1xl">P2P</h2>
+          <OverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accAccounts} viewType="OVERVIEW" colNum="7"></OverviewTile>
           <div>
-            {this.state.accounts
+            {this.state.accAccounts
               .sort(function (l, u) {
-                return l.name > u.name ? 1 : -1;
+                return l.total > u.total ? -1 : 1;
               })
-              .filter(function (item) {
-                return getCategoryByType(item.type) === "P2P";
-              })
-              .map((item) => (
-                <Tile
-                  key={item.id}
-                  balances={item.balances}
-                  deltaOption={this.state.selectedInterval}
-                  errorMessage={item.errorMessage}
-                  isError={item.isError}
-                  isLoading={item.isLoading}
-                  total={item.total}
-                  title={item.name}
-                  showIndicator="true"
-                  invested={item.invested}
-                  uninvested={item.uninvested}
-                  loss={item.loss}
-                  profit={item.profit}
-                ></Tile>
-              ))}
-          </div>
-          <h2 className="pt-4 font-bold text-1xl">Cryptos</h2>
-          <div>
-            {this.state.accounts
-              .sort(function (l, u) {
-                return l.name > u.name ? 1 : -1;
-              })
-              .filter(function (item) {
-                return getCategoryByType(item.type) === "CRYPTO";
-              })
-              .map((item) => (
-                <CryptoTile
-                  key={item.id}
-                  balances={item.balances}
-                  deltaOption={this.state.selectedInterval}
-                  errorMessage={item.errorMessage}
-                  isError={item.isError}
-                  isLoading={item.isLoading}
-                  rewards={item.rewards}
-                  total={item.total}
-                  price={item.price}
-                  staked={item.staked}
-                  title={item.name}
-                  showIndicator="true"
-                ></CryptoTile>
-              ))}
+              .map((item) => {
+                return (
+                  <Tile
+                    key={item.id}
+                    balances={item.balances}
+                    deltaOption={this.state.selectedInterval}
+                    errorMessage={item.errorMessage}
+                    isError={item.isError}
+                    isLoading={item.isLoading}
+                    total={item.total}
+                    title={item.name}
+                    showIndicator="true"
+                    invested={item.invested}
+                    uninvested={item.uninvested}
+                    loss={item.loss}
+                    profit={item.profit}
+                  ></Tile>
+                );
+              })}
           </div>
         </div>
       </div>
