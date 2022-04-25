@@ -21,11 +21,13 @@ class Home extends Component {
     ],
   };
 
-  componentDidMount() {
+  componentWillUnmount() {
     ipcRenderer.removeAllListeners("list-accounts-reply");
     ipcRenderer.removeAllListeners("query-account-reply");
     ipcRenderer.removeAllListeners("query-account-error");
+  }
 
+  componentDidMount() {
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
       var accounts = arg;
       var retAccounts = [
