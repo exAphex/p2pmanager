@@ -1,16 +1,14 @@
 import React from "react";
-import { toEuro, getIconByAccountType, getSafeNumber } from "../../utils/utils";
-import DeltaIndicator from "./deltaindicator";
+import { toEuro, toFixed, getIconByAccountType, getSafeNumber } from "../../utils/utils";
 import LoadingSpin from "react-loading-spin";
+import DeltaCryptoIndicator from "./deltacryptoindicator";
 import TableLine from "./tableline";
 
-class P2PTableLine extends TableLine {
+class CryptoTableLine extends TableLine {
   render() {
     var deltaDay = this.getDeltaDay(this.props.deltaOption);
-    var deltaInvested = getSafeNumber(this.props.invested) - this.getDeltaDayValue(this.props.balances, deltaDay, "invested");
-    var deltaUninvested = getSafeNumber(this.props.uninvested) - this.getDeltaDayValue(this.props.balances, deltaDay, "uninvested");
-    var deltaLoss = getSafeNumber(this.props.loss) - this.getDeltaDayValue(this.props.balances, deltaDay, "loss");
-    var deltaProfit = getSafeNumber(this.props.profit) - this.getDeltaDayValue(this.props.balances, deltaDay, "profit");
+    var deltaStaked = getSafeNumber(this.props.staked) - this.getDeltaDayValue(this.props.balances, deltaDay, "staked");
+    var deltaRewards = getSafeNumber(this.props.rewards) - this.getDeltaDayValue(this.props.balances, deltaDay, "rewards");
     var deltaTotal = getSafeNumber(this.props.total) - this.getDeltaDayValue(this.props.balances, deltaDay, "total");
     return (
       <tr className="border-b border-gray-200 hover:bg-gray-100">
@@ -31,32 +29,23 @@ class P2PTableLine extends TableLine {
         </td>
         <td className="py-3 px-6 text-right">
           <div className="grid grid-cols-1 justify-items-end">
-            <span>{toEuro(this.props.invested)}</span>
-            <DeltaIndicator value={deltaInvested}></DeltaIndicator>
+            <span>{toFixed(this.props.staked)}</span>
+            <span>{toEuro(this.props.staked * this.props.price)}</span>
+            <DeltaCryptoIndicator value={deltaStaked} price={this.props.price}></DeltaCryptoIndicator>
           </div>
         </td>
         <td className="py-3 px-6 text-right">
           <div className="grid grid-cols-1 justify-items-end">
-            <span>{toEuro(this.props.uninvested)}</span>
-            <DeltaIndicator value={deltaUninvested}></DeltaIndicator>
+            <span>{toFixed(this.props.rewards)}</span>
+            <span>{toEuro(this.props.rewards * this.props.price)}</span>
+            <DeltaCryptoIndicator value={deltaRewards} price={this.props.price}></DeltaCryptoIndicator>
           </div>
         </td>
         <td className="py-3 px-6 text-right">
           <div className="grid grid-cols-1 justify-items-end">
-            <span>{toEuro(this.props.loss)}</span>
-            <DeltaIndicator value={deltaLoss}></DeltaIndicator>
-          </div>
-        </td>
-        <td className="py-3 px-6 text-right">
-          <div className="grid grid-cols-1 justify-items-end">
-            <span>{toEuro(this.props.profit)}</span>
-            <DeltaIndicator value={deltaProfit}></DeltaIndicator>
-          </div>
-        </td>
-        <td className="py-3 px-6 text-right">
-          <div className="grid grid-cols-1 justify-items-end">
-            <span>{toEuro(this.props.total)}</span>
-            <DeltaIndicator value={deltaTotal}></DeltaIndicator>
+            <span>{toFixed(this.props.total)}</span>
+            <span>{toEuro(this.props.total * this.props.price)}</span>
+            <DeltaCryptoIndicator value={deltaTotal} price={this.props.price}></DeltaCryptoIndicator>
           </div>
         </td>
       </tr>
@@ -64,4 +53,4 @@ class P2PTableLine extends TableLine {
   }
 }
 
-export default P2PTableLine;
+export default CryptoTableLine;

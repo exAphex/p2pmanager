@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import CryptoTile from "../tile/cryptotile";
 import { getCategoryByType } from "../../utils/utils";
 import HistoricLineChart from "../charts/historiclinechart";
 import CryptoOverviewTile from "../tile/cryptooverviewtile";
+import CryptoTableLine from "../table/cryptotableline";
 const { ipcRenderer } = window.require("electron");
 
 class Cryptos extends Component {
@@ -232,27 +232,47 @@ class Cryptos extends Component {
         <div className="pl-8 pr-8">
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
           <CryptoOverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="CRYPTO" colNum="3"></CryptoOverviewTile>
-          <div>
-            {this.state.accounts
-              .sort(function (l, u) {
-                return l.name > u.name ? 1 : -1;
-              })
-              .map((item) => (
-                <CryptoTile
-                  key={item.id}
-                  balances={item.balances}
-                  deltaOption={this.state.selectedInterval}
-                  errorMessage={item.errorMessage}
-                  isError={item.isError}
-                  isLoading={item.isLoading}
-                  rewards={item.rewards}
-                  total={item.total}
-                  price={item.price}
-                  staked={item.staked}
-                  title={item.name}
-                  showIndicator="true"
-                ></CryptoTile>
-              ))}
+          <div className="overflow-x-auto">
+            <table className="min-w-max w-full table-auto">
+              <thead>
+                <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                  <th key="name" className="py-3 px-6 text-left">
+                    Name
+                  </th>
+                  <th key="staked" className="py-3 px-6 text-right">
+                    Staked
+                  </th>
+                  <th key="rewards" className="py-3 px-6 text-right">
+                    Unclaimed rewards
+                  </th>
+                  <th key="total" className="py-3 px-6 text-right">
+                    Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-600 text-sm font-light">
+                {this.state.accounts
+                  .sort(function (l, u) {
+                    return l.total * l.price < u.total * u.price ? 1 : -1;
+                  })
+                  .map((item) => (
+                    <CryptoTableLine
+                      key={item.id}
+                      deltaOption={this.state.selectedInterval}
+                      errorMessage={item.errorMessage}
+                      isError={item.isError}
+                      isLoading={item.isLoading}
+                      balances={item.balances}
+                      type={item.type}
+                      name={item.name}
+                      staked={item.staked}
+                      price={item.price}
+                      rewards={item.rewards}
+                      total={item.total}
+                    ></CryptoTableLine>
+                  ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

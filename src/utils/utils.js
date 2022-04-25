@@ -60,6 +60,13 @@ export const getSafeNumber = (num) => {
   }
 };
 
+export const toFixed = (amount) => {
+  if (!amount) {
+    amount = 0;
+  }
+  return amount.toFixed(8);
+};
+
 export const getIconByAccountType = (type) => {
   switch (type) {
     case "GetIncome":

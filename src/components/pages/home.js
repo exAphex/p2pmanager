@@ -4,7 +4,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
 import OverviewTile from "../tile/overviewtile";
 import { getCategoryByType } from "../../utils/utils";
-import CryptoTile from "../tile/cryptotile";
 const { ipcRenderer } = window.require("electron");
 
 class Home extends Component {

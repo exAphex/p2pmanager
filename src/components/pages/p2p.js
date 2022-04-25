@@ -248,19 +248,19 @@ class P2P extends Component {
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
           <P2POverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="P2P" colNum="5"></P2POverviewTile>
-          <div class="overflow-x-auto">
-            <table class="min-w-max w-full table-auto">
+          <div className="overflow-x-auto">
+            <table className="min-w-max w-full table-auto">
               <thead>
-                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                  <th class="py-3 px-6 text-left">Name</th>
-                  <th class="py-3 px-6 text-right">Invested</th>
-                  <th class="py-3 px-6 text-right">Uninvested</th>
-                  <th class="py-3 px-6 text-right">Loss</th>
-                  <th class="py-3 px-6 text-right">Profit</th>
-                  <th class="py-3 px-6 text-right">Total</th>
+                <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                  <th className="py-3 px-6 text-left">Name</th>
+                  <th className="py-3 px-6 text-right">Invested</th>
+                  <th className="py-3 px-6 text-right">Uninvested</th>
+                  <th className="py-3 px-6 text-right">Loss</th>
+                  <th className="py-3 px-6 text-right">Profit</th>
+                  <th className="py-3 px-6 text-right">Total</th>
                 </tr>
               </thead>
-              <tbody class="text-gray-600 text-sm font-light">
+              <tbody className="text-gray-600 text-sm font-light">
                 {this.state.accounts
                   .sort(function (l, u) {
                     return l.total < u.total ? 1 : -1;
