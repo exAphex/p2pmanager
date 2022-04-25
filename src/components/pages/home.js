@@ -93,33 +93,46 @@ class Home extends Component {
       }
 
       var retAccounts = [
-        { name: "P2P", isError: false, total: 0, balances: {} },
-        { name: "Cryptos", isError: false, total: 0, balances: {} },
+        { name: "P2P", isError: false, total: 0, balances: {}, type: "Bondster" },
+        { name: "Cryptos", isError: false, total: 0, balances: {}, type: "KAVA" },
       ];
       for (var i = 0; i < accounts.length; i++) {
-        var bal = this.getLatestBalance(accounts[i].balances);
         var index = 0;
+        var bal = this.getLatestBalance(accounts[i].balances);
+
         if (getCategoryByType(accounts[i].type) === "CRYPTO") {
           index = 1;
+          retAccounts[index].total += bal.total * (bal.price ? bal.price : 0);
+        } else {
+          index = 0;
+          retAccounts[index].total += bal.total;
         }
-
-        retAccounts[index].total += bal.total;
 
         for (var key in accounts[i].balances) {
           if (!retAccounts[index].balances[key]) {
             retAccounts[index].balances[key] = { total: 0 };
           }
-          retAccounts[index].balances[key].total += accounts[i].balances[key].total ? accounts[i].balances[key].total : 0;
+          if (getCategoryByType(accounts[i].type) === "CRYPTO") {
+            retAccounts[index].balances[key].total += accounts[i].balances[key].total ? accounts[i].balances[key].total * (accounts[i].balances[key].price ? accounts[i].balances[key].price : 0) : 0;
+          } else {
+            retAccounts[index].balances[key].total += accounts[i].balances[key].total ? accounts[i].balances[key].total : 0;
+          }
         }
       }
 
-      accounts = this.populateHistoricTimeLine(accounts);
+      retAccounts = this.populateHistoricTimeLine(retAccounts);
 
       this.setState({
         accounts: accounts,
         accAccounts: retAccounts,
+        showNewAccountModal: false,
+        showDeleteAccountModal: false,
         chartData: {
-          items: [{ name: "total", data: this.collectChartData(retAccounts, "total") }],
+          items: [
+            { name: "total", data: this.collectChartData(retAccounts, "total") },
+            { name: "P2P", data: this.collectAccChartData(retAccounts[0].type, retAccounts[0].balances, "total") },
+            { name: "Cryptos", data: this.collectAccChartData(retAccounts[1].type, retAccounts[1].balances, "total") },
+          ],
           type: "total",
           timeinterval: "daily",
         },

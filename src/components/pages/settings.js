@@ -14,6 +14,7 @@ import atomLogo from "../../assets/atom.ico";
 import kavaLogo from "../../assets/kava.png";
 import terraLogo from "../../assets/terra.png";
 import osmosisLogo from "../../assets/osmosis.ico";
+import croLogo from "../../assets/cro.png";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -92,6 +93,8 @@ class Settings extends Component {
         return <img width="24" height="24" src={terraLogo} alt="LUNA" />;
       case "OSMO":
         return <img width="24" height="24" src={osmosisLogo} alt="OSMO" />;
+      case "CRO":
+        return <img width="24" height="24" src={croLogo} alt="OSMO" />;
       default:
         return null;
     }
