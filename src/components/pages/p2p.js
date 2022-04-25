@@ -3,7 +3,8 @@ import Tile from "../tile/tile";
 import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
 import P2POverviewTile from "../tile/p2poverviewtile";
-import { getCategoryByType } from "../../utils/utils";
+import { getCategoryByType, getIconByAccountType } from "../../utils/utils";
+import P2PTableLine from "../table/p2ptableline";
 const { ipcRenderer } = window.require("electron");
 
 class P2P extends Component {
@@ -247,28 +248,41 @@ class P2P extends Component {
 
           <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
           <P2POverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="P2P" colNum="5"></P2POverviewTile>
-          <div>
-            {this.state.accounts
-              .sort(function (l, u) {
-                return l.name > u.name ? 1 : -1;
-              })
-              .map((item) => (
-                <Tile
-                  key={item.id}
-                  balances={item.balances}
-                  deltaOption={this.state.selectedInterval}
-                  errorMessage={item.errorMessage}
-                  isError={item.isError}
-                  isLoading={item.isLoading}
-                  total={item.total}
-                  title={item.name}
-                  showIndicator="true"
-                  invested={item.invested}
-                  uninvested={item.uninvested}
-                  loss={item.loss}
-                  profit={item.profit}
-                ></Tile>
-              ))}
+          <div class="overflow-x-auto">
+            <table class="min-w-max w-full table-auto">
+              <thead>
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                  <th class="py-3 px-6 text-left">Name</th>
+                  <th class="py-3 px-6 text-right">Invested</th>
+                  <th class="py-3 px-6 text-right">Uninvested</th>
+                  <th class="py-3 px-6 text-right">Loss</th>
+                  <th class="py-3 px-6 text-right">Profit</th>
+                  <th class="py-3 px-6 text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-600 text-sm font-light">
+                {this.state.accounts
+                  .sort(function (l, u) {
+                    return l.total < u.total ? 1 : -1;
+                  })
+                  .map((item) => (
+                    <P2PTableLine
+                      deltaOption={this.state.selectedInterval}
+                      errorMessage={item.errorMessage}
+                      isError={item.isError}
+                      isLoading={item.isLoading}
+                      balances={item.balances}
+                      type={item.type}
+                      name={item.name}
+                      invested={item.invested}
+                      uninvested={item.uninvested}
+                      loss={item.loss}
+                      profit={item.profit}
+                      total={item.total}
+                    ></P2PTableLine>
+                  ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
