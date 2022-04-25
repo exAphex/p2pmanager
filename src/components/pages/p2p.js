@@ -217,7 +217,7 @@ class P2P extends Component {
           <div>P2P</div>
         </div>
 
-        <div className="flex flex-wrap space-x-2 items-center pr-10">
+        <div className="flex flex-wrap space-x-2 items-center">
           <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black"></p>
           <div className="relative w-auto pl-1 flex-initial p-1 ">
             <div className="flex gap-2">
