@@ -43,8 +43,8 @@ class CryptoTableLine extends TableLine {
         </td>
         <td className="py-3 px-6 text-right">
           <div className="grid grid-cols-1 justify-items-end">
-            <span>{toFixed(this.props.total)}</span>
-            <span>{toEuro(this.props.total * this.props.price)}</span>
+            <span className="font-bold">{toFixed(this.props.total)}</span>
+            <span className="font-bold">{toEuro(this.props.total * this.props.price)}</span>
             <DeltaCryptoIndicator value={deltaTotal} price={this.props.price}></DeltaCryptoIndicator>
           </div>
         </td>

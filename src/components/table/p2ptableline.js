@@ -55,7 +55,7 @@ class P2PTableLine extends TableLine {
         </td>
         <td className="py-3 px-6 text-right">
           <div className="grid grid-cols-1 justify-items-end">
-            <span>{toEuro(this.props.total)}</span>
+            <span className="font-bold">{toEuro(this.props.total)}</span>
             <DeltaIndicator value={deltaTotal}></DeltaIndicator>
           </div>
         </td>
