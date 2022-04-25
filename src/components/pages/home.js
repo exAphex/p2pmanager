@@ -25,11 +25,6 @@ class Home extends Component {
     ipcRenderer.removeAllListeners("list-accounts-reply");
     ipcRenderer.removeAllListeners("query-account-reply");
     ipcRenderer.removeAllListeners("query-account-error");
-    ipcRenderer.removeAllListeners("update-app");
-
-    ipcRenderer.on("update-app", (event, arg) => {
-      console.log(arg.version);
-    });
 
     ipcRenderer.on("list-accounts-reply", (event, arg) => {
       var accounts = arg;

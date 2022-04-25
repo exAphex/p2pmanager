@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import Tile from "../tile/tile";
 import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
-import P2POverviewTile from "../tile/p2poverviewtile";
-import { getCategoryByType, getIconByAccountType } from "../../utils/utils";
+import { getCategoryByType } from "../../utils/utils";
 import P2PTableLine from "../table/p2ptableline";
+import P2PTotalLine from "../table/p2ptotalline";
 const { ipcRenderer } = window.require("electron");
 
 class P2P extends Component {
@@ -245,10 +244,7 @@ class P2P extends Component {
               <HistoricLineChart chartData={this.state.chartData}></HistoricLineChart>
             </div>
           </div>
-
-          <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <P2POverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="P2P" colNum="5"></P2POverviewTile>
-          <div className="overflow-x-auto">
+          <div className="pt-4 pb-4">
             <table className="min-w-max w-full table-auto">
               <thead>
                 <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -260,7 +256,7 @@ class P2P extends Component {
                   <th className="py-3 px-6 text-right">Total</th>
                 </tr>
               </thead>
-              <tbody className="text-gray-600 text-sm font-light">
+              <tbody className="text-gray-600 text-sm ">
                 {this.state.accounts
                   .sort(function (l, u) {
                     return l.total < u.total ? 1 : -1;
@@ -281,6 +277,7 @@ class P2P extends Component {
                       total={item.total}
                     ></P2PTableLine>
                   ))}
+                <P2PTotalLine deltaOption={this.state.selectedInterval} accounts={this.state.accounts}></P2PTotalLine>
               </tbody>
             </table>
           </div>
