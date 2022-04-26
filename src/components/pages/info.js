@@ -3,8 +3,12 @@ const { ipcRenderer } = window.require("electron");
 
 class Info extends Component {
   state = { version: null };
-  componentDidMount() {
+
+  componentWillUnmount() {
     ipcRenderer.removeAllListeners("query-version");
+  }
+
+  componentDidMount() {
     ipcRenderer.on("query-version", (event, arg) => {
       this.setState({ version: arg });
     });

@@ -60,7 +60,6 @@ async function checkForUpdate(event) {
         const url = "https://github.com/exAphex/p2pmanager/releases/";
         require("electron").shell.openExternal(url);
       });
-      event.reply("update-app", { version: json[0].name });
     }
   }
 }

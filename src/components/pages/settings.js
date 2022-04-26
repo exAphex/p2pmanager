@@ -21,6 +21,10 @@ const { ipcRenderer } = window.require("electron");
 class Settings extends Component {
   state = { selectedDeleteAccount: "", selectedAccountId: 0, isUpdate: false, showNewAccountModal: false, showDeleteAccountModal: false, accounts: [] };
 
+  componentWillUnmount() {
+    ipcRenderer.removeAllListeners("list-accounts-reply");
+  }
+
   componentDidMount() {
     ipcRenderer.removeAllListeners("list-accounts-reply");
     ipcRenderer.on("list-accounts-reply", (event, arg) => {

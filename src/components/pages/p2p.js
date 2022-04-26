@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import Tile from "../tile/tile";
 import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
-import P2POverviewTile from "../tile/p2poverviewtile";
 import { getCategoryByType } from "../../utils/utils";
+import P2PTableLine from "../table/p2ptableline";
+import P2PTotalLine from "../table/p2ptotalline";
 const { ipcRenderer } = window.require("electron");
 
 class P2P extends Component {
@@ -20,10 +20,13 @@ class P2P extends Component {
     ],
   };
 
-  componentDidMount() {
+  componentWillUnmount() {
     ipcRenderer.removeAllListeners("list-accounts-reply");
     ipcRenderer.removeAllListeners("query-account-reply");
     ipcRenderer.removeAllListeners("query-account-error");
+  }
+
+  componentDidMount() {
     ipcRenderer.removeAllListeners("update-app");
 
     ipcRenderer.on("update-app", (event, arg) => {
@@ -209,67 +212,76 @@ class P2P extends Component {
 
   render() {
     return (
-      <div className="bg-white shadow-md rounded my-0">
+      <div className="h-full flex flex-col">
         <div className="flex items-center justify-center h-14 border-b font-bold text-4xl">
           <div>P2P</div>
         </div>
 
-        <div className="m dax-w-full mx-4 py-0 sm:mx-auto sm:px-6 lg:px-8">
-          <div className="flex flex-wrap space-x-2 items-center">
-            <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black"></p>
-            <div className="relative w-auto pl-1 flex-initial p-1 ">
-              <div className="flex gap-2">
-                <select onChange={(evt) => this.handleChangeType(evt)} className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full">
-                  {this.state.interval
-                    .sort(function (l, u) {
-                      return l.type > u.type ? 1 : -1;
-                    })
-                    .map((item) => (
-                      <option>{item.name}</option>
-                    ))}
-                </select>
-                <div className="shadow rounded-lg flex mr-2">
-                  <button onClick={() => this.onRefreshAccounts()} type="button" className="rounded-lg inline-flex items-center bg-white hover:text-purple-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    <span className="hidden md:block ml-2">Refresh</span>
-                  </button>
-                </div>
+        <div className="flex flex-wrap space-x-2 items-center">
+          <p className="relative w-full pr-4 max-w-full flex-grow flex-1 text-3xl font-bold text-black"></p>
+          <div className="relative w-auto pl-1 flex-initial p-1 ">
+            <div className="flex gap-2">
+              <select onChange={(evt) => this.handleChangeType(evt)} className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full">
+                {this.state.interval
+                  .sort(function (l, u) {
+                    return l.type > u.type ? 1 : -1;
+                  })
+                  .map((item) => (
+                    <option>{item.name}</option>
+                  ))}
+              </select>
+              <div className="shadow rounded-lg flex mr-2">
+                <button onClick={() => this.onRefreshAccounts()} type="button" className="rounded-lg inline-flex items-center bg-white hover:text-purple-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span className="hidden md:block ml-2">Refresh</span>
+                </button>
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-6">
-            <div className="col-start-2 col-span-4">
-              <HistoricLineChart chartData={this.state.chartData}></HistoricLineChart>
-            </div>
+        </div>
+        <div className="grid grid-cols-6">
+          <div className="col-start-2 col-span-4">
+            <HistoricLineChart chartData={this.state.chartData}></HistoricLineChart>
           </div>
-
-          <h2 className="pt-4 font-bold text-2xl">Current portfolio</h2>
-          <P2POverviewTile deltaOption={this.state.selectedInterval} accounts={this.state.accounts} viewType="P2P" colNum="5"></P2POverviewTile>
-          <div>
-            {this.state.accounts
-              .sort(function (l, u) {
-                return l.name > u.name ? 1 : -1;
-              })
-              .map((item) => (
-                <Tile
-                  key={item.id}
-                  balances={item.balances}
-                  deltaOption={this.state.selectedInterval}
-                  errorMessage={item.errorMessage}
-                  isError={item.isError}
-                  isLoading={item.isLoading}
-                  total={item.total}
-                  title={item.name}
-                  showIndicator="true"
-                  invested={item.invested}
-                  uninvested={item.uninvested}
-                  loss={item.loss}
-                  profit={item.profit}
-                ></Tile>
-              ))}
-          </div>
+        </div>
+        <div className="pt-4 pb-4">
+          <table className="min-w-max w-full table-auto">
+            <thead>
+              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                <th className="py-3 px-6 text-left">Name</th>
+                <th className="py-3 px-6 text-right">Invested</th>
+                <th className="py-3 px-6 text-right">Uninvested</th>
+                <th className="py-3 px-6 text-right">Loss</th>
+                <th className="py-3 px-6 text-right">Profit</th>
+                <th className="py-3 px-6 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-600 text-sm ">
+              {this.state.accounts
+                .sort(function (l, u) {
+                  return l.total < u.total ? 1 : -1;
+                })
+                .map((item) => (
+                  <P2PTableLine
+                    deltaOption={this.state.selectedInterval}
+                    errorMessage={item.errorMessage}
+                    isError={item.isError}
+                    isLoading={item.isLoading}
+                    balances={item.balances}
+                    type={item.type}
+                    name={item.name}
+                    invested={item.invested}
+                    uninvested={item.uninvested}
+                    loss={item.loss}
+                    profit={item.profit}
+                    total={item.total}
+                  ></P2PTableLine>
+                ))}
+              <P2PTotalLine deltaOption={this.state.selectedInterval} accounts={this.state.accounts}></P2PTotalLine>
+            </tbody>
+          </table>
         </div>
       </div>
     );
