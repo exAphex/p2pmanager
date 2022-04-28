@@ -3,8 +3,9 @@ import moment from "moment";
 import "chartjs-adapter-moment";
 import { Line } from "react-chartjs-2";
 import { toFixed } from "../../utils/utils";
+import HistoricLineChart from "./historiclinechart";
 
-class HistoricLineChartCrypto extends Component {
+class HistoricLineChartCrypto extends HistoricLineChart {
   state = {
     chartData: {},
   };
@@ -73,79 +74,6 @@ class HistoricLineChartCrypto extends Component {
     options.scales.x.time.tooltipFormat = this.getIntervalChartOptionTooltip(data.timeinterval);
 
     return options;
-  }
-
-  parseChartData(data) {
-    if (!data) {
-      return;
-    }
-
-    if (data.items && data.items.length > 0) {
-      var colors = ["rgb(255, 99, 132)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(204, 0, 0)", "rgb(255, 159, 64)"];
-      var i = 0;
-      var dataSets = data.items.map((n) => {
-        var tmpData = [];
-        n.data
-          .sort((a, b) => (moment(a.time).isAfter(b.time) ? 1 : moment(a.time).isBefore(b.time) ? -1 : 0))
-          .forEach((item) => {
-            tmpData.push({ x: moment(item.time).toDate(), y: item.total });
-          });
-        i++;
-
-        let obj = { label: n.name, data: tmpData, spanGaps: !1, borderWidth: 2, pointRadius: 0, backgroundColor: colors[i], borderColor: colors[i] };
-        return obj;
-      });
-
-      let obj = {
-        datasets: dataSets,
-      };
-      return obj;
-    }
-  }
-
-  getIntervalName(name) {
-    switch (name) {
-      case "daily":
-        return "days";
-      case "monthly":
-        return "months";
-      default:
-        return "years";
-    }
-  }
-
-  getIntervalChartOptionType(name) {
-    switch (name) {
-      case "daily":
-        return "day";
-      case "monthly":
-        return "month";
-      default:
-        return "year";
-    }
-  }
-
-  getIntervalChartOptionTooltip(name) {
-    switch (name) {
-      case "daily":
-        return "DD.MM.YYYY";
-      case "monthly":
-        return "MM.YYYY";
-      default:
-        return "YYYY";
-    }
-  }
-
-  getMinDate(arr, intervalNameNative) {
-    var minDate = moment();
-    arr.forEach((n) => {
-      n.transactions.forEach((trans) => {
-        if (moment(trans.t) < minDate) {
-          minDate = moment(trans.t);
-        }
-      });
-    });
-    return minDate.startOf(intervalNameNative);
   }
 
   render() {
