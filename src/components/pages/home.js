@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import Tile from "../tile/tile";
 import "react-datepicker/dist/react-datepicker.css";
 import HistoricLineChart from "../charts/historiclinechart";
-import OverviewTile from "../tile/overviewtile";
 import { getCategoryByType } from "../../utils/utils";
 import OverviewTableLine from "../table/overviewtableline";
 import OverviewTotalLine from "../table/overviewtotalline";

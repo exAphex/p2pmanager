@@ -6,6 +6,7 @@ import Settings from "./pages/settings";
 import Cryptos from "./pages/cryptos";
 import P2P from "./pages/p2p";
 import { Link } from "react-router-dom";
+import CryptoDetail from "./pages/cryptodetail";
 
 class MainPage extends Component {
   state = { selectedNavItem: "DASHBOARD" };
@@ -124,6 +125,7 @@ class MainPage extends Component {
               <Route path="/p2p" exact element={<P2P />} />
               <Route path="/cryptos" exact element={<Cryptos />} />
               <Route path="/info" exact element={<Info />} />
+              <Route path="/cryptodetail/:id" exact element={<CryptoDetail />} />
             </Routes>
           </div>
         </div>

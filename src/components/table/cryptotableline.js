@@ -3,6 +3,7 @@ import { toEuro, toFixed, getIconByAccountType, getSafeNumber } from "../../util
 import LoadingSpin from "react-loading-spin";
 import DeltaCryptoIndicator from "./deltacryptoindicator";
 import TableLine from "./tableline";
+import { Link } from "react-router-dom";
 
 class CryptoTableLine extends TableLine {
   render() {
@@ -15,7 +16,10 @@ class CryptoTableLine extends TableLine {
         <td className="py-3 px-6 whitespace-nowrap">
           <div className="flex">
             <div className="mr-2">{getIconByAccountType(this.props.type)}</div>
-            <span className="font-medium">{this.props.name}</span>
+            <Link className={"font-medium"} to={"/cryptodetail/" + this.props.id}>
+              <span className="font-medium">{this.props.name}</span>
+            </Link>
+
             {this.props.isLoading ? <LoadingSpin size="24px" /> : null}
             {this.props.isError ? (
               <div className="text-red-800">

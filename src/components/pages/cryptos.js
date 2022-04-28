@@ -257,6 +257,7 @@ class Cryptos extends Component {
                 .map((item) => (
                   <CryptoTableLine
                     key={item.id}
+                    id={item.id}
                     deltaOption={this.state.selectedInterval}
                     errorMessage={item.errorMessage}
                     isError={item.isError}
