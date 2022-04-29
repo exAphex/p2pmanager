@@ -8,7 +8,7 @@ class OverviewTableLine extends TableLine {
     const deltaDay = this.getDeltaDay(this.props.deltaOption);
     const deltaTotal = getSafeNumber(this.props.total) - this.getDeltaDayValue(this.props.balances, deltaDay, 'total');
     return (
-      <tr className="border-b border-gray-200 hover:bg-gray-100">
+      <tr key={this.props.name} className="border-b border-gray-200 hover:bg-gray-100">
         <td className="py-3 px-6 whitespace-nowrap">
           <div className="flex">
             <span className="font-medium">{this.props.name}</span>
