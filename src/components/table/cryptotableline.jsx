@@ -1,21 +1,25 @@
-import React from "react";
-import { toEuro, toFixed, getIconByAccountType, getSafeNumber } from "../../utils/utils";
-import LoadingSpin from "react-loading-spin";
-import DeltaCryptoIndicator from "./deltacryptoindicator";
-import TableLine from "./tableline";
+import React from 'react';
+import {toEuro, toFixed, getIconByAccountType, getSafeNumber} from '../../utils/utils';
+import LoadingSpin from 'react-loading-spin';
+import DeltaCryptoIndicator from './deltacryptoindicator';
+import TableLine from './tableline';
+import {Link} from 'react-router-dom';
 
 class CryptoTableLine extends TableLine {
   render() {
-    var deltaDay = this.getDeltaDay(this.props.deltaOption);
-    var deltaStaked = getSafeNumber(this.props.staked) - this.getDeltaDayValue(this.props.balances, deltaDay, "staked");
-    var deltaRewards = getSafeNumber(this.props.rewards) - this.getDeltaDayValue(this.props.balances, deltaDay, "rewards");
-    var deltaTotal = getSafeNumber(this.props.total) - this.getDeltaDayValue(this.props.balances, deltaDay, "total");
+    const deltaDay = this.getDeltaDay(this.props.deltaOption);
+    const deltaStaked = getSafeNumber(this.props.staked) - this.getDeltaDayValue(this.props.balances, deltaDay, 'staked');
+    const deltaRewards = getSafeNumber(this.props.rewards) - this.getDeltaDayValue(this.props.balances, deltaDay, 'rewards');
+    const deltaTotal = getSafeNumber(this.props.total) - this.getDeltaDayValue(this.props.balances, deltaDay, 'total');
     return (
       <tr className="border-b border-gray-200 hover:bg-gray-100">
         <td className="py-3 px-6 whitespace-nowrap">
           <div className="flex">
             <div className="mr-2">{getIconByAccountType(this.props.type)}</div>
-            <span className="font-medium">{this.props.name}</span>
+            <Link className={'font-medium'} to={'/cryptodetail/' + this.props.id}>
+              <span className="font-medium">{this.props.name}</span>
+            </Link>
+
             {this.props.isLoading ? <LoadingSpin size="24px" /> : null}
             {this.props.isError ? (
               <div className="text-red-800">

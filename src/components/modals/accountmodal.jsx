@@ -1,29 +1,38 @@
-import React, { Component } from "react";
-import { getAccountTypes, getCategoryByType } from "../../utils/utils";
+import React, {Component} from 'react';
+import {getAccountTypes, getCategoryByType} from '../../utils/utils';
+import PropTypes from 'prop-types';
 
 class AccountModal extends Component {
+  static propTypes = {
+    isUpdate: PropTypes.bool.isRequired,
+    account: PropTypes.array.isRequired,
+    onUpdateAccount: PropTypes.func.isRequired,
+    setShowNewAccountModal: PropTypes.func.isRequired,
+    onCreateNewAccount: PropTypes.func.isRequired,
+  };
+
   state = {
-    accountId: "",
-    accountName: "",
-    accountUser: "",
-    accountPassword: "",
-    accountDescription: "",
-    accountAddress: "",
+    accountId: '',
+    accountName: '',
+    accountUser: '',
+    accountPassword: '',
+    accountDescription: '',
+    accountAddress: '',
     isUpdate: false,
     updateAccountId: 0,
-    type: "ATOM",
-    category: "CRYPTO",
+    type: 'ATOM',
+    category: 'CRYPTO',
     types: getAccountTypes(),
   };
 
   componentDidMount() {
     if (this.props.isUpdate) {
-      var acc = this.props.account;
+      const acc = this.props.account;
       if (acc) {
-        this.setState({ accountId: acc.id, accountName: acc.name, type: acc.type, accountUser: acc.user, accountPassword: acc.password, accountDescription: acc.description, accountAddress: acc.address, category: getCategoryByType(acc.type) });
+        this.setState({accountId: acc.id, accountName: acc.name, type: acc.type, accountUser: acc.user, accountPassword: acc.password, accountDescription: acc.description, accountAddress: acc.address, category: getCategoryByType(acc.type)});
       }
     }
-    this.setState({ isUpdate: this.props.isUpdate });
+    this.setState({isUpdate: this.props.isUpdate});
   }
 
   updateNameValue(evt) {
@@ -33,14 +42,14 @@ class AccountModal extends Component {
   }
 
   handleChangeType(evt) {
-    var types = this.state.types;
-    for (var i = 0; i < types.length; i++) {
+    const types = this.state.types;
+    for (let i = 0; i < types.length; i++) {
       if (types[i].name === evt.target.value) {
-        this.setState({ type: types[i].type, category: types[i].category });
+        this.setState({type: types[i].type, category: types[i].category});
         break;
       }
     }
-    return "Bondster";
+    return 'Bondster';
   }
 
   updateDescriptionValue(evt) {
@@ -75,7 +84,7 @@ class AccountModal extends Component {
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
-                  <div className={"mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full " + (this.state.isUpdate ? "bg-yellow-100" : "bg-green-100") + " sm:mx-0 sm:h-10 sm:w-10"}>
+                  <div className={'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ' + (this.state.isUpdate ? 'bg-yellow-100' : 'bg-green-100') + ' sm:mx-0 sm:h-10 sm:w-10'}>
                     {this.state.isUpdate ? (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -88,7 +97,7 @@ class AccountModal extends Component {
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-gray-900 mt-2" id="modal-title">
-                      {this.state.isUpdate ? "Update Account" : "New Account"}
+                      {this.state.isUpdate ? 'Update Account' : 'New Account'}
                     </h3>
                     <div className="mb-1 w-full flex-col mt-3">
                       <label className="font-medium text-gray-800 py-2">Name</label>
@@ -102,23 +111,23 @@ class AccountModal extends Component {
                             <path
                               d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
                               fill="#648299"
-                              fill-rule="nonzero"
+                              fillRule="nonzero"
                             />
                           </svg>
                           <select onChange={(evt) => this.handleChangeType(evt)} className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full">
                             {this.state.types
-                              .sort(function (l, u) {
-                                return l.name > u.name ? 1 : -1;
-                              })
-                              .map((item) => (
-                                <option>{item.name}</option>
-                              ))}
+                                .sort(function(l, u) {
+                                  return l.name > u.name ? 1 : -1;
+                                })
+                                .map((item) => (
+                                  <option key={item.name}>{item.name}</option>
+                                ))}
                           </select>
                         </div>
                       </div>
                     ) : null}
 
-                    {this.state.category === "P2P" ? (
+                    {this.state.category === 'P2P' ? (
                       <div className="mb-1 w-full flex-col mt-3">
                         <label className="font-medium text-gray-800 py-2">Account name</label>
                         <input value={this.state.accountUser} onChange={(evt) => this.updateAccountName(evt)} type="text" placeholder="john.doe@mail.com" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
@@ -127,7 +136,7 @@ class AccountModal extends Component {
                       <></>
                     )}
 
-                    {this.state.category === "P2P" ? (
+                    {this.state.category === 'P2P' ? (
                       <div className="mb-1 w-full flex-col mt-3">
                         <label className="font-medium text-gray-800 py-2">Password</label>
                         <input value={this.state.accountPassword} onChange={(evt) => this.updateAccountPassword(evt)} type="text" placeholder="Test123" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
@@ -136,7 +145,7 @@ class AccountModal extends Component {
                       <></>
                     )}
 
-                    {this.state.category === "CRYPTO" ? (
+                    {this.state.category === 'CRYPTO' ? (
                       <div className="mb-1 w-full flex-col mt-3">
                         <label className="font-medium text-gray-800 py-2">Address</label>
                         <input value={this.state.accountAddress} onChange={(evt) => this.updateAddress(evt)} type="text" placeholder="0x000000000" className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full" />
@@ -169,12 +178,12 @@ class AccountModal extends Component {
                     }
                   }}
                   className={
-                    "w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 " +
-                    (this.state.isUpdate ? "bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500" : "bg-green-600 hover:bg-green-700 focus:ring-green-500") +
-                    " text-base font-medium text-white  focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm"
+                    'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 ' +
+                    (this.state.isUpdate ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : 'bg-green-600 hover:bg-green-700 focus:ring-green-500') +
+                    ' text-base font-medium text-white  focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm'
                   }
                 >
-                  {this.state.isUpdate ? "Update" : "Create"}
+                  {this.state.isUpdate ? 'Update' : 'Create'}
                 </button>
                 <button
                   type="button"
@@ -187,7 +196,7 @@ class AccountModal extends Component {
             </div>
           </div>
         </div>
-        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>{" "}
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>{' '}
       </>
     );
   }
