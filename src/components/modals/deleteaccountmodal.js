@@ -1,6 +1,13 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 class DeleteAccountModal extends Component {
+  static propTypes = {
+    name: PropTypes.string.isRequired,
+    accountId: PropTypes.string.isRequired,
+    onDeleteAccount: PropTypes.func.isRequired,
+    setShowDeleteAccountModal: PropTypes.func.isRequired,
+  };
   state = {};
   render() {
     return (
@@ -44,7 +51,7 @@ class DeleteAccountModal extends Component {
             </div>
           </div>
         </div>
-        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>{" "}
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>{' '}
       </>
     );
   }

@@ -1,19 +1,24 @@
-import React, { Component } from "react";
-import moment from "moment";
-import "chartjs-adapter-moment";
-import { Line } from "react-chartjs-2";
+import React, {Component} from 'react';
+import moment from 'moment';
+import 'chartjs-adapter-moment';
+import {Line} from 'react-chartjs-2';
+import PropTypes from 'prop-types';
 
 class HistoricLineChart extends Component {
+  static propTypes = {
+    chartData: PropTypes.object.isRequired,
+  };
+
   state = {
     chartData: {},
   };
 
   parseChartOption(data) {
-    var options = {
+    const options = {
       spanGaps: 1000 * 60 * 60 * 24 * 2,
       interaction: {
-        axis: "xy",
-        mode: "index",
+        axis: 'xy',
+        mode: 'index',
         intersect: false,
       },
       animation: {
@@ -22,16 +27,16 @@ class HistoricLineChart extends Component {
       plugins: {
         tooltip: {
           callbacks: {
-            label: function (context) {
-              let label = context.dataset.label || "";
+            label: function(context) {
+              let label = context.dataset.label || '';
 
               if (label) {
-                label += ": ";
+                label += ': ';
               }
               if (context.parsed.y !== null) {
-                label += context.parsed.y.toLocaleString("de-DE", {
-                  style: "currency",
-                  currency: "EUR",
+                label += context.parsed.y.toLocaleString('de-DE', {
+                  style: 'currency',
+                  currency: 'EUR',
                   minimumFractionDigits: 2,
                 });
               }
@@ -44,24 +49,23 @@ class HistoricLineChart extends Component {
       radius: 0,
       scales: {
         x: {
-          type: "time",
+          type: 'time',
 
           time: {
             // Luxon format string
-            unit: "day",
+            unit: 'day',
             stepSize: 1,
-            tooltipFormat: "DD.MM.YYYY",
+            tooltipFormat: 'DD.MM.YYYY',
           },
           ticks: {
             min: 0,
             max: 4,
-            // For a category axis, the val is the index so the lookup via getLabelForValue is needed
           },
         },
         y: {
           ticks: {
-            callback: function (value, index, values) {
-              return value + " €";
+            callback: function(value, index, values) {
+              return value + ' €';
             },
           },
         },
@@ -84,22 +88,36 @@ class HistoricLineChart extends Component {
     }
 
     if (data.items && data.items.length > 0) {
-      var colors = ["rgb(255, 99, 132)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(204, 0, 0)", "rgb(255, 159, 64)"];
-      var i = 0;
-      var dataSets = data.items.map((n) => {
-        var tmpData = [];
+      const colors = ['rgb(255, 99, 132)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(54, 162, 235)',
+        'rgb(153, 102, 255)',
+        'rgb(204, 0, 0)',
+        'rgb(255, 159, 64)'];
+      let i = 0;
+      const dataSets = data.items.map((n) => {
+        const tmpData = [];
         n.data
-          .sort((a, b) => (moment(a.time).isAfter(b.time) ? 1 : moment(a.time).isBefore(b.time) ? -1 : 0))
-          .forEach((item) => {
-            tmpData.push({ x: moment(item.time).toDate(), y: item.total });
-          });
+            .sort((a, b) => (moment(a.time).isAfter(b.time) ? 1 : moment(a.time).isBefore(b.time) ? -1 : 0))
+            .forEach((item) => {
+              tmpData.push({x: moment(item.time).toDate(), y: item.total});
+            });
         i++;
 
-        let obj = { label: n.name, data: tmpData, spanGaps: !1, borderWidth: 2, pointRadius: 0, backgroundColor: colors[i], borderColor: colors[i] };
+        const obj = {
+          label: n.name,
+          data: tmpData,
+          spanGaps: !1,
+          borderWidth: 2,
+          pointRadius: 0,
+          backgroundColor: colors[i],
+          borderColor: colors[i],
+        };
         return obj;
       });
 
-      let obj = {
+      const obj = {
         datasets: dataSets,
       };
       return obj;
@@ -108,39 +126,39 @@ class HistoricLineChart extends Component {
 
   getIntervalName(name) {
     switch (name) {
-      case "daily":
-        return "days";
-      case "monthly":
-        return "months";
+      case 'daily':
+        return 'days';
+      case 'monthly':
+        return 'months';
       default:
-        return "years";
+        return 'years';
     }
   }
 
   getIntervalChartOptionType(name) {
     switch (name) {
-      case "daily":
-        return "day";
-      case "monthly":
-        return "month";
+      case 'daily':
+        return 'day';
+      case 'monthly':
+        return 'month';
       default:
-        return "year";
+        return 'year';
     }
   }
 
   getIntervalChartOptionTooltip(name) {
     switch (name) {
-      case "daily":
-        return "DD.MM.YYYY";
-      case "monthly":
-        return "MM.YYYY";
+      case 'daily':
+        return 'DD.MM.YYYY';
+      case 'monthly':
+        return 'MM.YYYY';
       default:
-        return "YYYY";
+        return 'YYYY';
     }
   }
 
   getMinDate(arr, intervalNameNative) {
-    var minDate = moment();
+    let minDate = moment();
     arr.forEach((n) => {
       n.transactions.forEach((trans) => {
         if (moment(trans.t) < minDate) {

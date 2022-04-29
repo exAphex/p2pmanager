@@ -1,14 +1,14 @@
-import React from "react";
-import { toEuro } from "../../utils/utils";
-import DeltaIndicator from "./deltaindicator";
-import TableLine from "./tableline";
+import React from 'react';
+import {toEuro} from '../../utils/utils';
+import DeltaIndicator from './deltaindicator';
+import TableLine from './tableline';
 
 class OverviewTotalLine extends TableLine {
   render() {
-    var overViewData = this.calculateAbsoluteProperty(this.props.accounts);
-    var deltaDay = this.getDeltaDay(this.props.deltaOption);
-    var deltaObj = this.getDeltaDayValueTotal(this.props.accounts, deltaDay);
-    var absObj = this.getDeltaAbsoluteValue(deltaObj, overViewData);
+    const overViewData = this.calculateAbsoluteProperty(this.props.accounts);
+    const deltaDay = this.getDeltaDay(this.props.deltaOption);
+    const deltaObj = this.getDeltaDayValueTotal(this.props.accounts, deltaDay);
+    const absObj = this.getDeltaAbsoluteValue(deltaObj, overViewData);
     return (
       <tr className="border-b border-gray-200 hover:bg-gray-100 bg-slate-200">
         <td className="py-3 px-6 whitespace-nowrap">

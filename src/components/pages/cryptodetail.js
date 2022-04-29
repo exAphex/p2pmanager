@@ -1,36 +1,42 @@
-import React, { Component } from "react";
-import HistoricLineChartCrypto from "../charts/historiclinechartcrypto";
-import { useParams } from "react-router-dom";
-import CryptoTransactionTableLine from "../table/cryptotransactiontableline";
-const { ipcRenderer } = window.require("electron");
+import React, {Component} from 'react';
+import HistoricLineChartCrypto from '../charts/historiclinechartcrypto';
+import {useParams} from 'react-router-dom';
+import CryptoTransactionTableLine from '../table/cryptotransactiontableline';
+const {ipcRenderer} = window.require('electron');
+import PropTypes from 'prop-types';
+
 export function withRouter(Children) {
-  return (props) => {
-    const match = { params: useParams() };
+  return function retWithRouter(props) {
+    const match = {params: useParams()};
     return <Children {...props} match={match} />;
   };
 }
 
 class CryptoDetail extends Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+  };
+
   state = {
-    name: "",
+    name: '',
     balances: [],
     account: {},
     accountId: 0,
   };
 
   componentWillUnmount() {
-    ipcRenderer.removeAllListeners("list-accounts-reply");
-    ipcRenderer.removeAllListeners("query-account-reply");
-    ipcRenderer.removeAllListeners("query-account-error");
+    ipcRenderer.removeAllListeners('list-accounts-reply');
+    ipcRenderer.removeAllListeners('query-account-reply');
+    ipcRenderer.removeAllListeners('query-account-error');
   }
 
   componentDidMount() {
-    this.setState({ accountId: this.props.match.params.id });
+    this.setState({accountId: this.props.match.params.id});
 
-    ipcRenderer.on("list-accounts-reply", (event, arg) => {
-      var accounts = arg;
-      var account = null;
-      for (var i = 0; i < accounts.length; i++) {
+    ipcRenderer.on('list-accounts-reply', (event, arg) => {
+      const accounts = arg;
+      let account = null;
+      for (let i = 0; i < accounts.length; i++) {
         if (accounts[i].id == this.state.accountId) {
           account = accounts[i];
         }
@@ -48,18 +54,18 @@ class CryptoDetail extends Component {
         name: account.name,
         chartData: {
           items: [
-            { name: "total", data: this.collectChartData(account, "total") },
-            { name: "staked", data: this.collectChartData(account, "staked") },
-            { name: "rewards", data: this.collectChartData(account, "rewards") },
+            {name: 'total', data: this.collectChartData(account, 'total')},
+            {name: 'staked', data: this.collectChartData(account, 'staked')},
+            {name: 'rewards', data: this.collectChartData(account, 'rewards')},
           ],
-          type: "total",
-          timeinterval: "daily",
+          type: 'total',
+          timeinterval: 'daily',
         },
       });
     });
 
-    ipcRenderer.on("query-account-reply", (event, arg) => {
-      var account = this.state.account;
+    ipcRenderer.on('query-account-reply', (event, arg) => {
+      let account = this.state.account;
       if (account.id === arg.id) {
         account.total = arg.data.total;
         account.staked = arg.data.staked;
@@ -77,24 +83,24 @@ class CryptoDetail extends Component {
         name: account.name,
         chartData: {
           items: [
-            { name: "total", data: this.collectChartData(account, "total") },
-            { name: "staked", data: this.collectChartData(account, "staked") },
-            { name: "rewards", data: this.collectChartData(account, "rewards") },
+            {name: 'total', data: this.collectChartData(account, 'total')},
+            {name: 'staked', data: this.collectChartData(account, 'staked')},
+            {name: 'rewards', data: this.collectChartData(account, 'rewards')},
           ],
-          type: "total",
-          timeinterval: "daily",
+          type: 'total',
+          timeinterval: 'daily',
         },
       });
     });
 
-    ipcRenderer.on("query-account-error", (event, arg) => {});
+    ipcRenderer.on('query-account-error', (event, arg) => {});
 
-    ipcRenderer.send("list-accounts", "test");
+    ipcRenderer.send('list-accounts', 'test');
   }
 
   collectChartData(account, prop) {
-    var chartObj = {};
-    for (var item in account.balances) {
+    const chartObj = {};
+    for (const item in account.balances) {
       if (!chartObj[item]) {
         chartObj[item] = account.balances[item] ? account.balances[item][prop] : 0;
       } else {
@@ -102,44 +108,46 @@ class CryptoDetail extends Component {
       }
     }
 
-    var chartArr = [];
-    for (var chartItem in chartObj) {
-      chartArr.push({ time: chartItem, total: chartObj[chartItem] });
+    const chartArr = [];
+    for (const chartItem in chartObj) {
+      if (chartObj.hasOwnProperty(chartItem)) {
+        chartArr.push({time: chartItem, total: chartObj[chartItem]});
+      }
     }
 
     return chartArr;
   }
 
   populateHistoricTimeLine(accounts) {
-    var elem = accounts;
-    var obj = {};
-    var balances = accounts.balances;
-    var minDate = this.getMinDate(balances);
-    var todayDate = this.getTodayDate();
-    var lastObj = null;
+    const elem = accounts;
+    const obj = {};
+    const balances = accounts.balances;
+    let minDate = this.getMinDate(balances);
+    const todayDate = this.getTodayDate();
+    let lastObj = null;
     while (minDate <= todayDate) {
       if (accounts.balances[minDate]) {
         lastObj = accounts.balances[minDate];
       }
       obj[minDate] = lastObj;
-      var cursorDate = new Date(minDate);
+      const cursorDate = new Date(minDate);
       cursorDate.setDate(cursorDate.getDate() + 1);
-      minDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+      minDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
     }
     elem.balances = obj;
     return elem;
   }
 
   getTodayDate() {
-    var today = new Date();
-    var minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    const today = new Date();
+    const minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split('T')[0];
     return minDate;
   }
 
   getMinDate(balances) {
-    var today = new Date();
-    var minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
-    for (var b in balances) {
+    const today = new Date();
+    let minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+    for (const b in balances) {
       if (minDate > b) {
         minDate = b;
       }
@@ -148,16 +156,16 @@ class CryptoDetail extends Component {
   }
 
   onRefreshAccounts() {
-    ipcRenderer.send("query-account", this.state.account);
+    ipcRenderer.send('query-account', this.state.account);
   }
 
   getLatestBalance(balances) {
     if (!balances) {
       return {};
     }
-    var newestDate = "1970-01-01";
-    var newestBalance = {};
-    for (var i in balances) {
+    let newestDate = '1970-01-01';
+    let newestBalance = {};
+    for (const i in balances) {
       if (newestDate <= i) {
         newestDate = i;
         newestBalance = balances[i];
@@ -167,27 +175,29 @@ class CryptoDetail extends Component {
   }
 
   handleChangeType(evt) {
-    var types = this.state.interval;
-    for (var i = 0; i < types.length; i++) {
+    const types = this.state.interval;
+    for (let i = 0; i < types.length; i++) {
       if (types[i].name === evt.target.value) {
-        this.setState({ selectedInterval: types[i].type });
+        this.setState({selectedInterval: types[i].type});
         break;
       }
     }
-    return "0";
+    return '0';
   }
 
   iterateBalances(balances) {
-    var balanceArr = [];
-    for (var item in balances) {
-      balances[item].date = item;
-      balanceArr.push(balances[item]);
+    const balanceArr = [];
+    for (const item in balances) {
+      if (balances.hasOwnProperty(item)) {
+        balances[item].date = item;
+        balanceArr.push(balances[item]);
+      }
     }
     return balanceArr
-      .sort(function (l, u) {
-        return l.date < u.date ? 1 : -1;
-      })
-      .map((item) => <CryptoTransactionTableLine key={item.id} date={item.date} staked={item.staked} rewards={item.rewards} total={item.total}></CryptoTransactionTableLine>);
+        .sort(function(l, u) {
+          return l.date < u.date ? 1 : -1;
+        })
+        .map((item) => <CryptoTransactionTableLine key={item.id} date={item.date} staked={item.staked} rewards={item.rewards} total={item.total}></CryptoTransactionTableLine>);
   }
 
   render() {

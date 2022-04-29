@@ -1,6 +1,6 @@
-import React from "react";
-import { toFixed } from "../../utils/utils";
-import TableLine from "./tableline";
+import React from 'react';
+import {toFixed} from '../../utils/utils';
+import TableLine from './tableline';
 
 class CryptoTransactionTableLine extends TableLine {
   render() {

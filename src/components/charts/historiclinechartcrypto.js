@@ -1,9 +1,8 @@
-import React, { Component } from "react";
-import moment from "moment";
-import "chartjs-adapter-moment";
-import { Line } from "react-chartjs-2";
-import { toFixed } from "../../utils/utils";
-import HistoricLineChart from "./historiclinechart";
+import React from 'react';
+import 'chartjs-adapter-moment';
+import {Line} from 'react-chartjs-2';
+import {toFixed} from '../../utils/utils';
+import HistoricLineChart from './historiclinechart';
 
 class HistoricLineChartCrypto extends HistoricLineChart {
   state = {
@@ -11,11 +10,11 @@ class HistoricLineChartCrypto extends HistoricLineChart {
   };
 
   parseChartOption(data) {
-    var options = {
+    const options = {
       spanGaps: 1000 * 60 * 60 * 24 * 2,
       interaction: {
-        axis: "xy",
-        mode: "index",
+        axis: 'xy',
+        mode: 'index',
         intersect: false,
       },
       animation: {
@@ -24,11 +23,11 @@ class HistoricLineChartCrypto extends HistoricLineChart {
       plugins: {
         tooltip: {
           callbacks: {
-            label: function (context) {
-              let label = context.dataset.label || "";
+            label: function(context) {
+              let label = context.dataset.label || '';
 
               if (label) {
-                label += ": ";
+                label += ': ';
               }
               if (context.parsed.y !== null) {
                 label += toFixed(context.parsed.y);
@@ -42,13 +41,13 @@ class HistoricLineChartCrypto extends HistoricLineChart {
       radius: 0,
       scales: {
         x: {
-          type: "time",
+          type: 'time',
 
           time: {
             // Luxon format string
-            unit: "day",
+            unit: 'day',
             stepSize: 1,
-            tooltipFormat: "DD.MM.YYYY",
+            tooltipFormat: 'DD.MM.YYYY',
           },
           ticks: {
             min: 0,
@@ -58,7 +57,7 @@ class HistoricLineChartCrypto extends HistoricLineChart {
         },
         y: {
           ticks: {
-            callback: function (value, index, values) {
+            callback: function(value, index, values) {
               return value;
             },
           },

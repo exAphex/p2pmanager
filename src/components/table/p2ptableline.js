@@ -1,17 +1,17 @@
-import React from "react";
-import { toEuro, getIconByAccountType, getSafeNumber } from "../../utils/utils";
-import DeltaIndicator from "./deltaindicator";
-import LoadingSpin from "react-loading-spin";
-import TableLine from "./tableline";
+import React from 'react';
+import {toEuro, getIconByAccountType, getSafeNumber} from '../../utils/utils';
+import DeltaIndicator from './deltaindicator';
+import LoadingSpin from 'react-loading-spin';
+import TableLine from './tableline';
 
 class P2PTableLine extends TableLine {
   render() {
-    var deltaDay = this.getDeltaDay(this.props.deltaOption);
-    var deltaInvested = getSafeNumber(this.props.invested) - this.getDeltaDayValue(this.props.balances, deltaDay, "invested");
-    var deltaUninvested = getSafeNumber(this.props.uninvested) - this.getDeltaDayValue(this.props.balances, deltaDay, "uninvested");
-    var deltaLoss = getSafeNumber(this.props.loss) - this.getDeltaDayValue(this.props.balances, deltaDay, "loss");
-    var deltaProfit = getSafeNumber(this.props.profit) - this.getDeltaDayValue(this.props.balances, deltaDay, "profit");
-    var deltaTotal = getSafeNumber(this.props.total) - this.getDeltaDayValue(this.props.balances, deltaDay, "total");
+    const deltaDay = this.getDeltaDay(this.props.deltaOption);
+    const deltaInvested = getSafeNumber(this.props.invested) - this.getDeltaDayValue(this.props.balances, deltaDay, 'invested');
+    const deltaUninvested = getSafeNumber(this.props.uninvested) - this.getDeltaDayValue(this.props.balances, deltaDay, 'uninvested');
+    const deltaLoss = getSafeNumber(this.props.loss) - this.getDeltaDayValue(this.props.balances, deltaDay, 'loss');
+    const deltaProfit = getSafeNumber(this.props.profit) - this.getDeltaDayValue(this.props.balances, deltaDay, 'profit');
+    const deltaTotal = getSafeNumber(this.props.total) - this.getDeltaDayValue(this.props.balances, deltaDay, 'total');
     return (
       <tr className="border-b border-gray-200 hover:bg-gray-100">
         <td className="py-3 px-6 whitespace-nowrap">

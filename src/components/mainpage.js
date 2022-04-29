@@ -1,26 +1,26 @@
-import React, { Component } from "react";
-import { HashRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
-import Info from "./pages/info";
-import Settings from "./pages/settings";
-import Cryptos from "./pages/cryptos";
-import P2P from "./pages/p2p";
-import { Link } from "react-router-dom";
-import CryptoDetail from "./pages/cryptodetail";
+import React, {Component} from 'react';
+import {HashRouter, Routes, Route} from 'react-router-dom';
+import Home from './pages/home';
+import Info from './pages/info';
+import Settings from './pages/settings';
+import Cryptos from './pages/cryptos';
+import P2P from './pages/p2p';
+import {Link} from 'react-router-dom';
+import CryptoDetail from './pages/cryptodetail';
 
 class MainPage extends Component {
-  state = { selectedNavItem: "DASHBOARD" };
+  state = {selectedNavItem: 'DASHBOARD'};
 
   getSelectedBg(item) {
     if (item === this.state.selectedNavItem) {
-      return "bg-gray-100";
+      return 'bg-gray-100';
     } else {
-      return "";
+      return '';
     }
   }
 
   setSelected(item) {
-    this.setState({ selectedNavItem: item });
+    this.setState({selectedNavItem: item});
   }
 
   render() {
@@ -35,14 +35,24 @@ class MainPage extends Component {
                 <ul>
                   <li>
                     <Link
-                      className={"flex items-center px-4 py-2 text-gray-700 " + this.getSelectedBg("DASHBOARD") + " rounded-md hover:bg-gray-200"}
+                      className={
+                        'flex items-center px-4 py-2 text-gray-700 ' +
+                        this.getSelectedBg('DASHBOARD') +
+                        ' rounded-md hover:bg-gray-200'
+                      }
                       onClick={() => {
-                        this.setSelected("DASHBOARD");
+                        this.setSelected('DASHBOARD');
                       }}
                       to="/"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                        />
                       </svg>
 
                       <span className="mx-4 font-medium">Dashboard</span>
@@ -50,9 +60,9 @@ class MainPage extends Component {
                   </li>
                   <li>
                     <Link
-                      className={"flex items-center px-4 py-2 mt-5 text-gray-600 " + this.getSelectedBg("P2P") + " rounded-md hover:bg-gray-200"}
+                      className={'flex items-center px-4 py-2 mt-5 text-gray-600 ' + this.getSelectedBg('P2P') + ' rounded-md hover:bg-gray-200'}
                       onClick={() => {
-                        this.setSelected("P2P");
+                        this.setSelected('P2P');
                       }}
                       to="/p2p"
                     >
@@ -65,9 +75,9 @@ class MainPage extends Component {
                   </li>
                   <li>
                     <Link
-                      className={"flex items-center px-4 py-2 mt-5 text-gray-600 " + this.getSelectedBg("CRYPTOS") + " rounded-md hover:bg-gray-200"}
+                      className={'flex items-center px-4 py-2 mt-5 text-gray-600 ' + this.getSelectedBg('CRYPTOS') + ' rounded-md hover:bg-gray-200'}
                       onClick={() => {
-                        this.setSelected("CRYPTOS");
+                        this.setSelected('CRYPTOS');
                       }}
                       to="/cryptos"
                     >
@@ -80,9 +90,9 @@ class MainPage extends Component {
                   </li>
                   <li>
                     <Link
-                      className={"flex items-center px-4 py-2 mt-5 text-gray-600 " + this.getSelectedBg("SETTINGS") + " rounded-md hover:bg-gray-200"}
+                      className={'flex items-center px-4 py-2 mt-5 text-gray-600 ' + this.getSelectedBg('SETTINGS') + ' rounded-md hover:bg-gray-200'}
                       onClick={() => {
-                        this.setSelected("SETTINGS");
+                        this.setSelected('SETTINGS');
                       }}
                       to="/settings"
                     >
@@ -101,9 +111,9 @@ class MainPage extends Component {
                   </li>
                   <li>
                     <Link
-                      className={"flex items-center px-4 py-2 mt-5 text-gray-600 " + this.getSelectedBg("INFO") + " rounded-md hover:bg-gray-200"}
+                      className={'flex items-center px-4 py-2 mt-5 text-gray-600 ' + this.getSelectedBg('INFO') + ' rounded-md hover:bg-gray-200'}
                       onClick={() => {
-                        this.setSelected("INFO");
+                        this.setSelected('INFO');
                       }}
                       to="/info"
                     >

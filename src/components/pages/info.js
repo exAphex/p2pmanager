@@ -1,19 +1,19 @@
-import React, { Component } from "react";
-const { ipcRenderer } = window.require("electron");
+import React, {Component} from 'react';
+const {ipcRenderer} = window.require('electron');
 
 class Info extends Component {
-  state = { version: null };
+  state = {version: null};
 
   componentWillUnmount() {
-    ipcRenderer.removeAllListeners("query-version");
+    ipcRenderer.removeAllListeners('query-version');
   }
 
   componentDidMount() {
-    ipcRenderer.on("query-version", (event, arg) => {
-      this.setState({ version: arg });
+    ipcRenderer.on('query-version', (event, arg) => {
+      this.setState({version: arg});
     });
 
-    ipcRenderer.send("get-version", "");
+    ipcRenderer.send('get-version', '');
   }
 
   render() {

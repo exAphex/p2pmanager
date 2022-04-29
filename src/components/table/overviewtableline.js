@@ -1,12 +1,12 @@
-import React from "react";
-import { toEuro, getSafeNumber } from "../../utils/utils";
-import DeltaIndicator from "./deltaindicator";
-import TableLine from "./tableline";
+import React from 'react';
+import {toEuro, getSafeNumber} from '../../utils/utils';
+import DeltaIndicator from './deltaindicator';
+import TableLine from './tableline';
 
 class OverviewTableLine extends TableLine {
   render() {
-    var deltaDay = this.getDeltaDay(this.props.deltaOption);
-    var deltaTotal = getSafeNumber(this.props.total) - this.getDeltaDayValue(this.props.balances, deltaDay, "total");
+    const deltaDay = this.getDeltaDay(this.props.deltaOption);
+    const deltaTotal = getSafeNumber(this.props.total) - this.getDeltaDayValue(this.props.balances, deltaDay, 'total');
     return (
       <tr className="border-b border-gray-200 hover:bg-gray-100">
         <td className="py-3 px-6 whitespace-nowrap">
