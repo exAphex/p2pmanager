@@ -4,8 +4,8 @@ const fetchCookie = require('fetch-cookie');
 const fetchCo = fetchCookie(fetch);
 const FormData = require('form-data');
 
-const api = 'https://lendsecured.eu/en/investor';
-const authAPI = 'https://lendsecured.eu/en/login';
+const api = 'https://lande.finance/en/investor';
+const authAPI = 'https://lande.finance/en/login';
 
 const getLendSecured = async (username, password) => {
   const csrfToken = await getCSRFToken();
