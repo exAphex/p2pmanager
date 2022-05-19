@@ -2,11 +2,12 @@ import React, {Component} from 'react';
 import HistoricLineChartCrypto from '../charts/historiclinechartcrypto';
 import {useParams} from 'react-router-dom';
 import CryptoTransactionTableLine from '../table/cryptotransactiontableline';
-const {ipcRenderer} = window.require('electron');
 import PropTypes from 'prop-types';
+const {ipcRenderer} = window.require('electron');
+
 
 export function withRouter(Children) {
-  return function retWithRouter(props) {
+  return function RetWithRouter(props) {
     const match = {params: useParams()};
     return <Children {...props} match={match} />;
   };
