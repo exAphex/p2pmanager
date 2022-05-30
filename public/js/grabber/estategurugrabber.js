@@ -32,7 +32,7 @@ const parseTotal = (data) => {
   const loss = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', '')) * -1;
   parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', '</span>');
   parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', '</span>');
-  parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', '</span>');
+  //parseObj = parseNextValue(parseObj.remain, '<span class="item-value">', '</span>');
   const invested = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
   return {uninvested: uninvested, total: total, invested: invested, profit: profit, loss: loss};
 };

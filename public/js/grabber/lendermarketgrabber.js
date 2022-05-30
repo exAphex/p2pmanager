@@ -22,7 +22,11 @@ const parseTotal = (data) => {
   parseObj = parseNextValue(parseObj.remain, '<td>- Invested funds</td>\n<td><span title="', '"');
   const invested = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
   parseObj = parseNextValue(parseObj.remain, '<td>- Available funds</td>\n<td><span title="', '"');
-  const uninvested = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
+  let uninvested = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
+  if (!(uninvested >= 0)) {
+    parseObj = parseNextValue(parseObj.remain, '<td>- Available funds</td>\n <td><span title="', '"');
+    uninvested = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
+  }
   parseObj = parseNextValue(parseObj.remain, '<td>Profit</td>\n<td><span title="', '"');
   const profit = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
   return {uninvested: uninvested, total: total, invested: invested, profit: profit, loss: 0};
