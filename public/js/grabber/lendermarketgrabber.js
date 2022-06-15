@@ -3,8 +3,8 @@ const fetchCookie = require('fetch-cookie');
 
 const fetchCo = fetchCookie(fetch);
 const FormData = require('form-data');
-const api = 'https://www.lendermarket.com/summary';
-const authAPI = 'https://www.lendermarket.com/account/login';
+const api = 'https://app.lendermarket.com/summary';
+const authAPI = 'https://app.lendermarket.com/account/login';
 
 const grabLendermarket = async (username, password) => {
   const csrfToken = await getCSRFToken();
