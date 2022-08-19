@@ -30,12 +30,12 @@ const getCSRFToken = async () => {
 };
 
 const parseTotal = (data) => {
-  let parseObj = parseNextValue(data, '<div class="h6 font-weight-normal mt-2 mb-0">', '</div>');
+  let parseObj = parseNextValue(data, '<div class="h6 fw-semi-bold mt-2 mb-0">', '</div>');
   const total = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
-  parseObj = parseNextValue(parseObj.remain, '<span class="font-weight-bold text-primary">', '</span>');
+  parseObj = parseNextValue(parseObj.remain, '<span class="fw-semi-bold text-success">', '</span>');
   const uninvested = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
-  parseObj = parseNextValue(parseObj.remain, '<div class="h6 font-weight-normal mt-2 mb-0">', '</div>');
-  parseObj = parseNextValue(parseObj.remain, '<div class="h6 font-weight-normal mt-2 mb-0">', '</div>');
+  parseObj = parseNextValue(parseObj.remain, '<div class="h6 fw-semi-bold mt-2 mb-0">', '</div>');
+  parseObj = parseNextValue(parseObj.remain, '<div class="h6 fw-semi-bold mt-2 mb-0">', '</div>');
   const profit = parseFloat(parseObj.value.substr(parseObj.value.indexOf('€') + 1).replaceAll(',', ''));
   return {uninvested: uninvested, total: total, invested: total - uninvested, profit: profit, loss: 0};
 };
