@@ -7,8 +7,15 @@ const store = require('electron-json-storage');
 const fetch = require('node-fetch');
 const accountHandler = require('./js/handlers/accounthandler.js');
 
-ipcMain.on('query-account', (event, arg) => {
-  accountHandler.queryAccounts(event, arg);
+ipcMain.handle('i_query_account', (event, arg) => {
+  try {
+    return accountHandler.queryAccount(arg);  
+  } catch (e) {
+    throw {
+      messsage: 'Generic error',
+      error: e,
+    };
+  }
 });
 
 ipcMain.on('add-account', (event, arg) => {

@@ -1,41 +1,33 @@
-import React, {Component} from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
-import HistoricLineChart from '../charts/historiclinechart';
-import {getCategoryByType} from '../../utils/utils';
-import P2PTableLine from '../table/p2ptableline';
-import P2PTotalLine from '../table/p2ptotalline';
-const {ipcRenderer} = window.require('electron');
+import React, { Component } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+import HistoricLineChart from "../charts/historiclinechart";
+import { getCategoryByType } from "../../utils/utils";
+import P2PTableLine from "../table/p2ptableline";
+import P2PTotalLine from "../table/p2ptotalline";
+const { ipcRenderer } = window.require("electron");
 
 class P2P extends Component {
   state = {
     accounts: [],
     timestamp: new Date(),
     chartData: {},
-    selectedInterval: '0',
+    selectedInterval: "0",
     interval: [
-      {name: 'Last 24 hours', type: '0'},
-      {name: 'Last week', type: '1'},
-      {name: 'Last month', type: '2'},
-      {name: 'Last year', type: '3'},
+      { name: "Last 24 hours", type: "0" },
+      { name: "Last week", type: "1" },
+      { name: "Last month", type: "2" },
+      { name: "Last year", type: "3" },
     ],
   };
 
   componentWillUnmount() {
-    ipcRenderer.removeAllListeners('list-accounts-reply');
-    ipcRenderer.removeAllListeners('query-account-reply');
-    ipcRenderer.removeAllListeners('query-account-error');
+    ipcRenderer.removeAllListeners("list-accounts-reply");
   }
 
   componentDidMount() {
-    ipcRenderer.removeAllListeners('update-app');
-
-    ipcRenderer.on('update-app', (event, arg) => {
-      console.log(arg.version);
-    });
-
-    ipcRenderer.on('list-accounts-reply', (event, arg) => {
-      let accounts = arg.filter(function(a) {
-        return getCategoryByType(a.type) === 'P2P';
+    ipcRenderer.on("list-accounts-reply", (event, arg) => {
+      let accounts = arg.filter(function (a) {
+        return getCategoryByType(a.type) === "P2P";
       });
       for (let i = 0; i < accounts.length; i++) {
         const bal = this.getLatestBalance(accounts[i].balances);
@@ -55,74 +47,29 @@ class P2P extends Component {
         showDeleteAccountModal: false,
         chartData: {
           items: [
-            {name: 'total', data: this.collectChartData(accounts, 'total')},
-            {name: 'invested', data: this.collectChartData(accounts, 'invested')},
-            {name: 'uninvested', data: this.collectChartData(accounts, 'uninvested')},
-            {name: 'profit', data: this.collectChartData(accounts, 'profit')},
+            { name: "total", data: this.collectChartData(accounts, "total") },
+            { name: "invested", data: this.collectChartData(accounts, "invested") },
+            { name: "uninvested", data: this.collectChartData(accounts, "uninvested") },
+            { name: "profit", data: this.collectChartData(accounts, "profit") },
           ],
-          type: 'total',
-          timeinterval: 'daily',
+          type: "total",
+          timeinterval: "daily",
         },
       });
     });
 
-    ipcRenderer.on('query-account-reply', (event, arg) => {
-      let accounts = this.state.accounts;
-      for (let i = 0; i < accounts.length; i++) {
-        if (accounts[i].id === arg.id) {
-          accounts[i].total = arg.data.total;
-          accounts[i].invested = arg.data.invested;
-          accounts[i].uninvested = arg.data.uninvested;
-          accounts[i].loss = arg.data.loss;
-          accounts[i].profit = arg.data.profit;
-          accounts[i].isLoading = false;
-          accounts[i].isError = false;
-          break;
-        }
-      }
-
-      accounts = this.populateHistoricTimeLine(accounts);
-
-      this.setState({
-        accounts: accounts,
-        chartData: {
-          items: [
-            {name: 'total', data: this.collectChartData(accounts, 'total')},
-            {name: 'invested', data: this.collectChartData(accounts, 'invested')},
-            {name: 'uninvested', data: this.collectChartData(accounts, 'uninvested')},
-            {name: 'profit', data: this.collectChartData(accounts, 'profit')},
-          ],
-          type: 'total',
-          timeinterval: 'daily',
-        },
-      });
-    });
-
-    ipcRenderer.on('query-account-error', (event, arg) => {
-      const accounts = this.state.accounts;
-      for (let i = 0; i < accounts.length; i++) {
-        if (accounts[i].id === arg.message.id) {
-          accounts[i].isLoading = false;
-          accounts[i].isError = true;
-          accounts[i].errorMessage = arg.error;
-          break;
-        }
-      }
-      this.setState({accounts: accounts});
-    });
-
-    ipcRenderer.send('list-accounts', 'test');
+    ipcRenderer.send("list-accounts", "test");
   }
 
   getTodayDate() {
     const today = new Date();
-    const minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+    const minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
     return minDate;
   }
 
   getMinDate(balances) {
     const today = new Date();
-    let minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+    let minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
     for (const b in balances) {
       if (minDate > b) {
         minDate = b;
@@ -147,7 +94,7 @@ class P2P extends Component {
         obj[minDate] = lastObj;
         const cursorDate = new Date(minDate);
         cursorDate.setDate(cursorDate.getDate() + 1);
-        minDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+        minDate = new Date(cursorDate.getTime() - cursorDate.getTimezoneOffset() * 60000).toISOString().split("T")[0];
       }
       elem.balances = obj;
       accs.push(element);
@@ -170,7 +117,7 @@ class P2P extends Component {
     const chartArr = [];
     for (const chartItem in chartObj) {
       if (chartObj.hasOwnProperty(chartItem)) {
-        chartArr.push({time: chartItem, total: chartObj[chartItem]});
+        chartArr.push({ time: chartItem, total: chartObj[chartItem] });
       }
     }
 
@@ -181,7 +128,7 @@ class P2P extends Component {
     if (!balances) {
       return {};
     }
-    let newestDate = '1970-01-01';
+    let newestDate = "1970-01-01";
     let newestBalance = {};
     for (const i in balances) {
       if (newestDate <= i) {
@@ -193,23 +140,59 @@ class P2P extends Component {
   }
 
   onRefreshAccounts() {
-    const accounts = this.state.accounts;
+    let accounts = this.state.accounts;
     for (let i = 0; i < accounts.length; i++) {
       accounts[i].isLoading = true;
-      ipcRenderer.send('query-account', accounts[i]);
+      accounts[i].isError = false;
+      this.setState({ accounts: accounts });
+      ipcRenderer
+        .invoke("i_query_account", accounts[i])
+        .then((arg) => {
+          for (const acc of this.state.accounts) {
+            if (acc.id == arg.id) {
+              acc.total = arg.data.total;
+              acc.invested = arg.data.invested;
+              acc.uninvested = arg.data.uninvested;
+              acc.loss = arg.data.loss;
+              acc.profit = arg.data.profit;
+              acc.isLoading = false;
+              acc.isError = false;
+              break;
+            }
+          }
+          let tempAccounts = this.populateHistoricTimeLine(this.state.accounts);
+          this.setState({
+            accounts: tempAccounts,
+            chartData: {
+              items: [
+                { name: "total", data: this.collectChartData(tempAccounts, "total") },
+                { name: "invested", data: this.collectChartData(tempAccounts, "invested") },
+                { name: "uninvested", data: this.collectChartData(tempAccounts, "uninvested") },
+                { name: "profit", data: this.collectChartData(tempAccounts, "profit") },
+              ],
+              type: "total",
+              timeinterval: "daily",
+            },
+          });
+        })
+        .catch((arg) => {
+          accounts[i].isLoading = false;
+          accounts[i].isError = true;
+          accounts[i].errorMessage = arg.error;
+          this.setState({ accounts: accounts });
+        });
     }
-    this.setState({accounts: accounts});
   }
 
   handleChangeType(evt) {
     const types = this.state.interval;
     for (let i = 0; i < types.length; i++) {
       if (types[i].name === evt.target.value) {
-        this.setState({selectedInterval: types[i].type});
+        this.setState({ selectedInterval: types[i].type });
         break;
       }
     }
-    return '0';
+    return "0";
   }
 
   render() {
@@ -225,12 +208,12 @@ class P2P extends Component {
             <div className="flex gap-2">
               <select onChange={(evt) => this.handleChangeType(evt)} className="px-4 h-10 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded border border-grey-lighter w-full">
                 {this.state.interval
-                    .sort(function(l, u) {
-                      return l.type > u.type ? 1 : -1;
-                    })
-                    .map((item) => (
-                      <option key={item.name}>{item.name}</option>
-                    ))}
+                  .sort(function (l, u) {
+                    return l.type > u.type ? 1 : -1;
+                  })
+                  .map((item) => (
+                    <option key={item.name}>{item.name}</option>
+                  ))}
               </select>
               <div className="shadow rounded-lg flex mr-2">
                 <button onClick={() => this.onRefreshAccounts()} type="button" className="rounded-lg inline-flex items-center bg-white hover:text-purple-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4">
@@ -262,26 +245,26 @@ class P2P extends Component {
             </thead>
             <tbody className="text-gray-600 text-sm ">
               {this.state.accounts
-                  .sort(function(l, u) {
-                    return l.total < u.total ? 1 : -1;
-                  })
-                  .map((item) => (
-                    <P2PTableLine
-                      key={item.id}
-                      deltaOption={this.state.selectedInterval}
-                      errorMessage={item.errorMessage}
-                      isError={item.isError}
-                      isLoading={item.isLoading}
-                      balances={item.balances}
-                      type={item.type}
-                      name={item.name}
-                      invested={item.invested}
-                      uninvested={item.uninvested}
-                      loss={item.loss}
-                      profit={item.profit}
-                      total={item.total}
-                    ></P2PTableLine>
-                  ))}
+                .sort(function (l, u) {
+                  return l.total < u.total ? 1 : -1;
+                })
+                .map((item) => (
+                  <P2PTableLine
+                    key={item.id}
+                    deltaOption={this.state.selectedInterval}
+                    errorMessage={item.errorMessage}
+                    isError={item.isError}
+                    isLoading={item.isLoading}
+                    balances={item.balances}
+                    type={item.type}
+                    name={item.name}
+                    invested={item.invested}
+                    uninvested={item.uninvested}
+                    loss={item.loss}
+                    profit={item.profit}
+                    total={item.total}
+                  ></P2PTableLine>
+                ))}
               <P2PTotalLine deltaOption={this.state.selectedInterval} accounts={this.state.accounts}></P2PTotalLine>
             </tbody>
           </table>
