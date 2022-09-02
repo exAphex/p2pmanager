@@ -3,10 +3,8 @@ import {HashRouter, Routes, Route} from 'react-router-dom';
 import Home from './pages/home';
 import Info from './pages/info';
 import Settings from './pages/settings';
-import Cryptos from './pages/cryptos';
 import P2P from './pages/p2p';
 import {Link} from 'react-router-dom';
-import CryptoDetail from './pages/cryptodetail';
 
 class MainPage extends Component {
   state = {selectedNavItem: 'DASHBOARD'};
@@ -75,21 +73,6 @@ class MainPage extends Component {
                   </li>
                   <li>
                     <Link
-                      className={'flex items-center px-4 py-2 mt-5 text-gray-600 ' + this.getSelectedBg('CRYPTOS') + ' rounded-md hover:bg-gray-200'}
-                      onClick={() => {
-                        this.setSelected('CRYPTOS');
-                      }}
-                      to="/cryptos"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M11 11V9a2 2 0 00-2-2m2 4v4a2 2 0 104 0v-1m-4-3H9m2 0h4m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-
-                      <span className="mx-4 font-medium">Cryptos</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
                       className={'flex items-center px-4 py-2 mt-5 text-gray-600 ' + this.getSelectedBg('SETTINGS') + ' rounded-md hover:bg-gray-200'}
                       onClick={() => {
                         this.setSelected('SETTINGS');
@@ -133,9 +116,7 @@ class MainPage extends Component {
               <Route path="/" exact element={<Home></Home>} />
               <Route path="/settings" exact element={<Settings />} />
               <Route path="/p2p" exact element={<P2P />} />
-              <Route path="/cryptos" exact element={<Cryptos />} />
               <Route path="/info" exact element={<Info />} />
-              <Route path="/cryptodetail/:id" exact element={<CryptoDetail />} />
             </Routes>
           </div>
         </div>

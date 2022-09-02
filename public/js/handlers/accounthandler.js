@@ -5,9 +5,6 @@ const estategurugrabber = require("../grabber/estategurugrabber.js");
 const lendsecuredgrabber = require("../grabber/lendsecuredgrabber.js");
 const lendermarketgrabber = require("../grabber/lendermarketgrabber.js");
 const esketitgrabber = require("../grabber/esketitgrabber.js");
-const solanagrabber = require("../grabber/solanagrabber.js");
-const terragrabber = require("../grabber/terragrabber.js");
-const genericCosmosGrabber = require("../grabber/genericcosmosgrabber.js");
 const store = require("electron-json-storage");
 var Mutex = require('async-mutex').Mutex;
 const mutex = new Mutex();
@@ -48,30 +45,6 @@ const queryAccount = async (arg) => {
             return {id : arg.id, data: balance};
           case "Esketit":
             balance = await esketitgrabber.grabEsketit(accounts[i].user, accounts[i].password);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
-          case "Solana":
-            balance = await solanagrabber.getSolana(accounts[i].address);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
-          case "ATOM":
-            balance = await genericCosmosGrabber.getGenericCoin("cosmos", "cosmos", 1000000, accounts[i].address);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
-          case "KAVA":
-            balance = await genericCosmosGrabber.getGenericCoin("kava", "kava", 1000000, accounts[i].address);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
-          case "OSMO":
-            balance = await genericCosmosGrabber.getGenericCoin("osmosis", "osmosis", 1000000, accounts[i].address);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
-          case "CRO":
-            balance = await genericCosmosGrabber.getGenericCoin("cryptocom", "crypto-com-chain", 100000000, accounts[i].address);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
-          case "LUNA":
-            balance = await terragrabber.getLUNA(accounts[i].address);
             updateAccountBalances(arg.id, balance);
             return {id : arg.id, data: balance};
           default:
