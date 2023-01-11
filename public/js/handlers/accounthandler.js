@@ -10,7 +10,7 @@ var Mutex = require('async-mutex').Mutex;
 const mutex = new Mutex();
 
 const queryAccount = async (arg) => {
-  var l = await mutex.runExclusive(async () => {
+    let lastUpdated = 0;
     let accounts = store.getSync("accounts");
     if (!accounts || !Array.isArray(accounts)) {
       accounts = [];
@@ -21,40 +21,39 @@ const queryAccount = async (arg) => {
         switch (accounts[i].type) {
           case "GetIncome":
             balance = await getincomegrabber.grabGetIncome(accounts[i].user, accounts[i].password);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
+            lastUpdated = await updateAccountBalances(arg.id, balance);
+            break;
           case "PeerBerry":
             balance = await peerberrygrabber.getPeerBerry(accounts[i].user, accounts[i].password);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
+            lastUpdated = await updateAccountBalances(arg.id, balance);
+            break;
           case "Bondster":
             balance = await bondstergrabber.getBondster(accounts[i].user, accounts[i].password);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
+            lastUpdated =await updateAccountBalances(arg.id, balance);
+            break;
           case "EstateGuru":
             balance = await estategurugrabber.getEstateGuru(accounts[i].user, accounts[i].password);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
+            lastUpdated = await updateAccountBalances(arg.id, balance);
+            break;
           case "LendSecured":
             balance = await lendsecuredgrabber.getLendSecured(accounts[i].user, accounts[i].password);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
+            lastUpdated = await updateAccountBalances(arg.id, balance);
+            break;
           case "Lendermarket":
             balance = await lendermarketgrabber.grabLendermarket(accounts[i].user, accounts[i].password);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
+            lastUpdated = await updateAccountBalances(arg.id, balance);
+            break;
           case "Esketit":
             balance = await esketitgrabber.grabEsketit(accounts[i].user, accounts[i].password);
-            updateAccountBalances(arg.id, balance);
-            return {id : arg.id, data: balance};
+            lastUpdated = await updateAccountBalances(arg.id, balance);
+            break;
           default:
             throw "Unknown provider";
         }
+        return {id : arg.id, data: balance, lastUpdated};
       }
     }
     return null;
-  });
-  return l;
 };
 
 const addAccount = (event, arg) => {
@@ -98,6 +97,7 @@ const deleteAccount = (event, arg) => {
 };
 
 const updateAccount = (event, arg) => {
+  const today = new Date();
   let accounts = store.getSync("accounts");
   if (!accounts || !Array.isArray(accounts)) {
     accounts = [];
@@ -109,6 +109,7 @@ const updateAccount = (event, arg) => {
       accounts[i].user = arg.user;
       accounts[i].password = arg.password;
       accounts[i].description = arg.description;
+      accounts[i].lastUpdated = today.getTime() - today.getTimezoneOffset() * 60000;
       break;
     }
   }
@@ -117,15 +118,30 @@ const updateAccount = (event, arg) => {
   event.reply("list-accounts-reply", accounts);
 };
 
-function updateAccountBalances(id, balanceData) {
+const  updateAccountBalances= async (id, balanceData) => {
+  const today = new Date();
+  let accounts = store.getSync("accounts");
+  if (!accounts || !Array.isArray(accounts)) {
+    accounts = [];
+  }
+
+  for (let i = 0; i < accounts.length; i++) {
+    if (accounts[i].id === id) {
+      accounts[i].lastUpdated = today.getTime() - today.getTimezoneOffset() * 60000;
+      break;
+    }
+  }
+  store.set("accounts", accounts);
+
   let balances = store.getSync("balance_" + id);
   if (!balances) {
     balances = {};
   }
-  const today = new Date();
   const dateString = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
   balances[dateString] = balanceData;
   store.set("balance_" + id, balances);
+
+  return today.getTime() - today.getTimezoneOffset() * 60000;
 }
 
 exports.addAccount = addAccount;

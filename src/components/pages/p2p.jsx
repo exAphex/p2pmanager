@@ -155,6 +155,7 @@ class P2P extends Component {
               acc.uninvested = arg.data.uninvested;
               acc.loss = arg.data.loss;
               acc.profit = arg.data.profit;
+              acc.lastUpdated = arg.lastUpdated;
               acc.isLoading = false;
               acc.isError = false;
               break;
@@ -236,6 +237,7 @@ class P2P extends Component {
             <thead>
               <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Name</th>
+                <th className="py-3 px-6 text-right">Last Updated</th>
                 <th className="py-3 px-6 text-right">Invested</th>
                 <th className="py-3 px-6 text-right">Uninvested</th>
                 <th className="py-3 px-6 text-right">Loss</th>
@@ -262,6 +264,7 @@ class P2P extends Component {
                     uninvested={item.uninvested}
                     loss={item.loss}
                     profit={item.profit}
+                    lastUpdated={item.lastUpdated}
                     total={item.total}
                   ></P2PTableLine>
                 ))}

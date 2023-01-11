@@ -18,6 +18,11 @@ class P2PTotalLine extends TableLine {
         </td>
         <td className="py-3 px-6 text-right">
           <div className="grid grid-cols-1 justify-items-end">
+            
+          </div>
+        </td>
+        <td className="py-3 px-6 text-right">
+          <div className="grid grid-cols-1 justify-items-end">
             <span className="font-bold">{toEuro(overViewData.invested)}</span>
             <DeltaIndicator value={absObj.invested}></DeltaIndicator>
           </div>

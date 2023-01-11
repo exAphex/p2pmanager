@@ -31,6 +31,11 @@ class P2PTableLine extends TableLine {
         </td>
         <td className="py-3 px-6 text-right">
           <div className="grid grid-cols-1 justify-items-end">
+            <span>{this.getTimestamp(this.props.lastUpdated)}</span>
+          </div>
+        </td>
+        <td className="py-3 px-6 text-right">
+          <div className="grid grid-cols-1 justify-items-end">
             <span>{toEuro(this.props.invested)}</span>
             <DeltaIndicator value={deltaInvested}></DeltaIndicator>
           </div>

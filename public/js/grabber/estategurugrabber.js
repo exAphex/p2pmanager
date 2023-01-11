@@ -1,18 +1,19 @@
 const fetch = require('node-fetch');
 const fetchCookie = require('fetch-cookie');
 
-const fetchCo = fetchCookie(fetch);
+
 const headers = {
   'Content-Type': 'application/json',
 };
-const api = 'https://app.estateguru.co/portfolio/overview';
+const api = 'https://app.estateguru.co/portfolio/ajaxFillAccountAndLoanData';
 const authAPI = 'https://account.estateguru.co/api/login';
 const defaultAccountAPI = 'https://account.estateguru.co/api/user/info?username=';
 
 const getEstateGuru = async (username, password) => {
+  const fetchCo = fetchCookie(fetch);
   const data = {username: username, rememberMe:false, password: password};
   await fetchCo(authAPI, {method: 'POST', headers: headers, body: JSON.stringify(data)})
-  const defaultAccount = await getDefaultAccountId(username);
+  const defaultAccount = await getDefaultAccountId(fetchCo, username);
   await fetchCo('https://account.estateguru.co/api/account/' + defaultAccount + '/switch', {method: 'POST'});
   await fetchCo('https://account.estateguru.co/api/account/' + defaultAccount, {method: 'GET'});
   const response = await fetchCo(api, {method: 'GET'});
@@ -21,7 +22,7 @@ const getEstateGuru = async (username, password) => {
   return retObj;
 };
 
-const getDefaultAccountId = async (username) => {
+const getDefaultAccountId = async (fetchCo, username) => {
   const responseS = await fetchCo(defaultAccountAPI + username, {method: 'GET'});
   const respJSON = await responseS.json();
   return respJSON.defaultAccountId;

@@ -1,20 +1,20 @@
-import {Component} from 'react';
-import {getSafeNumber, getCategoryByType} from '../../utils/utils';
+import { Component } from "react";
+import { getSafeNumber, getCategoryByType } from "../../utils/utils";
 
 class TableLine extends Component {
   getDeltaDay(option) {
     let retDay = new Date();
     retDay.setDate(retDay.getDate() - 1);
     switch (option) {
-      case '1':
+      case "1":
         retDay = new Date();
         retDay.setDate(retDay.getDate() - 7);
         break;
-      case '2':
+      case "2":
         retDay = new Date();
         retDay.setMonth(retDay.getMonth() - 1);
         break;
-      case '3':
+      case "3":
         retDay = new Date();
         retDay.setFullYear(retDay.getFullYear() - 1);
         break;
@@ -26,8 +26,18 @@ class TableLine extends Component {
     return retDay;
   }
 
+  getTimestamp(timestamp) {
+    if (timestamp && timestamp > 0) {
+      const m = new Date(timestamp);
+      var dateString =  ("0" + m.getUTCHours()).slice(-2) + ":" + ("0" + m.getUTCMinutes()).slice(-2) + ":" + ("0" + m.getUTCSeconds()).slice(-2) + " " + ("0" + m.getUTCDate()).slice(-2) + "." + ("0" + (m.getUTCMonth() + 1)).slice(-2) + '.' +  m.getUTCFullYear();
+      return dateString;
+    } else {
+      return "-";
+    }
+  }
+
   getDeltaDayValue(balances, date, prop) {
-    const dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+    const dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split("T")[0];
     if (!balances || !balances[dateString]) {
       return 0;
     } else {
@@ -37,7 +47,7 @@ class TableLine extends Component {
 
   formatError(e) {
     if (!e) {
-      return '';
+      return "";
     }
 
     if (e instanceof String) {
@@ -48,14 +58,14 @@ class TableLine extends Component {
       return e.message;
     }
 
-    return 'Unkown error!';
+    return "Unkown error!";
   }
 
   calculateAbsoluteProperty(accounts) {
-    const retData = {total: 0, invested: 0, uninvested: 0, loss: 0, profit: 0, staked: 0, rewards: 0};
+    const retData = { total: 0, invested: 0, uninvested: 0, loss: 0, profit: 0, staked: 0, rewards: 0 };
     accounts.forEach((element) => {
       let total = element.total;
-      if (getCategoryByType(element.type) === 'CRYPTO') {
+      if (getCategoryByType(element.type) === "CRYPTO") {
         total = element.total * (element.price ? element.price : 0);
       }
       retData.total += total ? total : 0;
@@ -70,10 +80,10 @@ class TableLine extends Component {
   }
 
   getDeltaDayValueTotal(accounts, date) {
-    const dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0];
-    const retData = {total: 0, invested: 0, uninvested: 0, loss: 0, profit: 0, staked: 0, rewards: 0};
+    const dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    const retData = { total: 0, invested: 0, uninvested: 0, loss: 0, profit: 0, staked: 0, rewards: 0 };
     accounts.forEach((element) => {
-      if (getCategoryByType(element.type) === 'CRYPTO') {
+      if (getCategoryByType(element.type) === "CRYPTO") {
         retData.total += element.balances[dateString] && element.balances[dateString].total ? element.balances[dateString].total * (element.balances[dateString].price ? element.balances[dateString].price : 0) : 0;
       } else {
         retData.total += element.balances[dateString] && element.balances[dateString].total ? element.balances[dateString].total : 0;

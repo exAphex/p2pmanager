@@ -1,32 +1,27 @@
 const fetch = require('node-fetch');
 const fetchCookie = require('fetch-cookie');
 
-const fetchCo = fetchCookie(fetch);
 const FormData = require('form-data');
 
 const api = 'https://lande.finance/en/investor';
-const authAPI = 'https://lande.finance/en/login';
+const authAPI = 'https://lande.finance/login';
 
 const getLendSecured = async (username, password) => {
-  const csrfToken = await getCSRFToken();
-  await getCookie(csrfToken, username, password);
+  const fetchCo = fetchCookie(fetch);
+  const csrfToken = await getCSRFToken(fetchCo);
+  await getCookie(fetchCo,csrfToken, username, password);
   const response = await fetchCo(api, {method: 'GET', headers: {'Content-Type': 'application/json'}});
   const respText = await response.text();
   const retObj = parseTotal(respText);
   return retObj;
 };
 
-const getCSRFToken = async () => {
+const getCSRFToken = async (fetchCo) => {
   const response = await fetchCo(authAPI, {method: 'GET'});
   const respText = await response.text();
   const retObj = parseNextValue(respText, 'name="_token" value="', '"');
-
-  let cookieHeaders = response.headers.get('set-cookie');
-  const posJSESSIONID = cookieHeaders.indexOf('lendsecured_session=');
-  cookieHeaders = cookieHeaders.substr(posJSESSIONID);
-  const posSemicolon = cookieHeaders.indexOf(';');
-  cookieHeaders = cookieHeaders.substr(0, posSemicolon);
-  return {token: retObj.value, cookie: cookieHeaders};
+  
+  return {token: retObj.value};
 };
 
 const parseTotal = (data) => {
@@ -47,19 +42,12 @@ const parseNextValue = (data, findStr, finishStr) => {
   return {value: newData.substr(0, finishPos).trim(), remain: data.substr(itemValue + findStr.length + finishPos)};
 };
 
-const getCookie = async (token, username, password) => {
+const getCookie = async (fetchCo, token, username, password) => {
   const form = new FormData();
   form.append('email', username);
   form.append('password', password);
   form.append('_token', token.token);
-  const response = await fetchCo(authAPI, {method: 'POST', body: form, redirect: 'manual'});
-
-  let cookieHeaders = response.headers.get('set-cookie');
-  const posJSESSIONID = cookieHeaders.indexOf('lendsecured_session=');
-  cookieHeaders = cookieHeaders.substr(posJSESSIONID);
-  const posSemicolon = cookieHeaders.indexOf(';');
-  cookieHeaders = cookieHeaders.substr(0, posSemicolon);
-  return cookieHeaders;
+  await fetchCo(authAPI, {method: 'POST', body: form, redirect: 'manual'});
 };
 
 exports.getLendSecured = getLendSecured;
