@@ -5,6 +5,7 @@ const estategurugrabber = require("../grabber/estategurugrabber.js");
 const lendsecuredgrabber = require("../grabber/lendsecuredgrabber.js");
 const lendermarketgrabber = require("../grabber/lendermarketgrabber.js");
 const esketitgrabber = require("../grabber/esketitgrabber.js");
+const finbeegrabber = require("../grabber/finbeegrabber.js");
 const store = require("electron-json-storage");
 var Mutex = require('async-mutex').Mutex;
 const mutex = new Mutex();
@@ -45,6 +46,10 @@ const queryAccount = async (arg) => {
             break;
           case "Esketit":
             balance = await esketitgrabber.grabEsketit(accounts[i].user, accounts[i].password);
+            lastUpdated = await updateAccountBalances(arg.id, balance);
+            break;
+          case "Finbee":
+            balance = await finbeegrabber.getFinbee(accounts[i].user, accounts[i].password);
             lastUpdated = await updateAccountBalances(arg.id, balance);
             break;
           default:
