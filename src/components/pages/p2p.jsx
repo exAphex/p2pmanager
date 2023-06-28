@@ -59,6 +59,7 @@ class P2P extends Component {
     });
 
     ipcRenderer.send("list-accounts", "test");
+    ipcRenderer.send('update-app', '');
   }
 
   getTodayDate() {

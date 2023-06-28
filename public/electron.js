@@ -6,12 +6,13 @@ const {ipcMain} = require('electron');
 const store = require('electron-json-storage');
 const fetch = require('node-fetch');
 const accountHandler = require('./js/handlers/accounthandler.js');
+const db = require('./js/db/database.js');
 
 ipcMain.handle('i_query_account', (event, arg) => {
   try {
-    return accountHandler.queryAccount(arg);  
+    return accountHandler.queryAccount(db.getDatabase(), arg);  
   } catch (e) {
-    throw {
+    throw { 
       messsage: 'Generic error',
       error: e,
     };
@@ -19,19 +20,19 @@ ipcMain.handle('i_query_account', (event, arg) => {
 });
 
 ipcMain.on('add-account', (event, arg) => {
-  accountHandler.addAccount(event, arg);
+  accountHandler.addAccount(event, db.getDatabase(), arg); 
 });
 
 ipcMain.on('list-accounts', (event, arg) => {
-  accountHandler.listAccounts(event, arg);
+  accountHandler.listAccounts(event, db.getDatabase());
 });
 
 ipcMain.on('delete-account', (event, arg) => {
-  accountHandler.deleteAccount(event, arg);
+  accountHandler.deleteAccount(event, db.getDatabase(), arg);
 });
 
 ipcMain.on('update-account', (event, arg) => {
-  accountHandler.updateAccount(event, arg);
+  accountHandler.updateAccount(event, db.getDatabase(), arg);
 });
 
 ipcMain.on('get-version', (event, arg) => {
