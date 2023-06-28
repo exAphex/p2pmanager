@@ -17,7 +17,7 @@ const upsertBalance = (db, id, date, balanceData) => {
 		updateStmt.run(balanceData.total, balanceData.uninvested, balanceData.invested, balanceData.profit, balanceData.loss, id, date);
 	} else {
 		const insertStmt = db.prepare("INSERT INTO balances VALUES (?,?,?,?,?,?,?)");
-		insertStmt.run(account.id, date, balanceData.total, balanceData.uninvested, balanceData.invested, balanceData.profit, balanceData.loss);
+		insertStmt.run(id, date, balanceData.total, balanceData.uninvested, balanceData.invested, balanceData.profit, balanceData.loss);
 	}
 	return getBalances(db, id);
 };
