@@ -5,17 +5,18 @@ const fetchCookie = require('fetch-cookie');
 const headers = {
   'Content-Type': 'application/json',
 };
-const api = 'https://app.estateguru.co/portfolio/ajaxFillAccountAndLoanData';
+const api = 'https://app.estateguru.co/portfolio/ajaxFillAccountAndLoanData?userId=';
 const authAPI = 'https://account.estateguru.co/api/login';
 const defaultAccountAPI = 'https://account.estateguru.co/api/user/info?username=';
 
 const getEstateGuru = async (username, password) => {
-  const fetchCo = fetchCookie(fetch);
+  const cookieJar = new fetchCookie.toughCookie.CookieJar();
+  const fetchCo = fetchCookie(fetch, cookieJar);
   const data = {username: username, rememberMe:false, password: password};
   await fetchCo(authAPI, {method: 'POST', headers: headers, body: JSON.stringify(data)})
   const defaultAccount = await getDefaultAccountId(fetchCo, username);
   await fetchCo('https://account.estateguru.co/api/account/' + defaultAccount + '/switch', {method: 'POST'});
-  await fetchCo('https://account.estateguru.co/api/account/' + defaultAccount, {method: 'GET'});
+  await fetchCo('https://app.estateguru.co/portfolio/overview', {method: 'GET'});
   const response = await fetchCo(api, {method: 'GET'});
   const respText = await response.text();
   const retObj = parseTotal(respText);
